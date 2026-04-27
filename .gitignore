@@ -1,4 +1,5 @@
 ### This project's output files ###
+.DS_Store
 out/*
 out-*/*
 dist/*
