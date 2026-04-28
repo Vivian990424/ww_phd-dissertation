@@ -170,7 +170,7 @@
 }
 
 % ---------- 3. 稻田降温效应与生物物理气候效应 ----------
-@article{Xue2021RemoteSensing,
+@article{Li2021,
   author  = {Xue, Wei and Jeong, Seungtaek and Ko, Jonghan and Yeom, Jong-Min},
   title   = {Contribution of biophysical factors to regional variations of evapotranspiration and seasonal cooling effects in paddy rice in {South Korea}},
   journal = {Remote Sensing},
