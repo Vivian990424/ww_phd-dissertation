@@ -1,165 +1,717 @@
 \chapter{全球稻田地表降温效应研究}
 
-本章以 GlobalRice500 提供的逐像元水稻生长季信息为时间约束，构建全球稻田地表温度（land surface temperature, LST）降温效应的量化框架，并从空间格局、时间动态和作用机制等多个层面评估稻田相对于周边非稻田农田的地表温度差异。与基于固定月份或区域平均作物历的分析不同，本章将温度比较严格限定于像元真实 SOS--EOS 生长季窗口内，同时结合邻近空间约束、地形约束和同类农田对照，以尽可能削弱背景气候、下垫面类型和地形差异对温度比较的干扰。
+稻田是由田面水、湿润土壤和水稻冠层共同构成的水--植被复合农田系统，其地表热状态受水分管理、作物生长过程和农田景观结构共同调控。与典型旱作农田相比，稻田在水稻生长季内通常具有更高的蒸发和蒸腾能力，可通过增强潜热通量、削弱显热通量并改变地表热储存过程影响地表温度（land surface temperature, LST）。因此，稻田地表降温效应并非单纯的作物类型差异，而是水稻种植制度、田间水分状态和冠层发育共同作用下的地表生物物理响应 \cite{Bright2017LCMC,Duveiller2018Energy,Chen2024Croplands}。
 
-\section{稻田地表降温效应的定义与量化框架}
+本章以 GlobalRice500 数据集提供的逐像元水稻生长季信息为时间边界，结合 2003--2020 年全球 1 km 日尺度 LST 数据 \cite{Zhang2022ESSDLST}，构建稻田与周边非水稻农田的匹配对照框架，用于量化全球稻田生长季地表降温效应。
+已有稻田温度效应研究多在区域尺度上依据固定生长季月份或代表性生长季窗口组织 LST 或温度比较 \cite{Liu2022AgForMet,Xue2021RemoteSensing}；全球作物历和月尺度作物面积产品虽可为大尺度农业过程分析提供时间先验，但难以表达像元尺度水稻 SOS--EOS 的空间差异 \cite{Laborte2017SciData,Portmann2010MIRCA}。基于此，本章将 LST 提取与比较限定在 GlobalRice500 数据集中记录的逐像元 SOS--EOS 生长季窗口内，并以空间邻近、地形相近和同类农田为原则筛选非水稻农田对照样本。该设计将稻田与非水稻农田置于尽量一致的局地农业背景中进行比较，从而降低区域气候、土地覆盖类型、地形条件和生长季时间错配对温度量化的混杂影响。
 
-本节首先界定稻田地表降温效应的比较基准，再从局地景观组成、田块空间连续性和周边影响范围三个维度构建量化指标，最后说明观测型比较框架中需要控制的不确定性来源及其统计评估方法。上述设计的共同目标，是在真实水稻生长季约束下，将稻田与其局地农业背景之间的温度差异尽可能收敛为可解释的相对效应。
+本章进一步围绕全球总体格局、局地景观结构、生长季动态和边界邻近关系四个层面展开稻田地表温度效应分析。
+首先，从多年平均空间分布和年际变化两个角度，量化水稻生长季内稻田与周边非水稻农田之间的日间和夜间 LST 差异，分析其总体格局及昼夜差异。
+其次，从稻田在局地景观中的覆盖程度和连片分布特征出发，比较不同空间组织条件下稻田与周边非水稻农田日间 LST 差异的变化，分析稻田景观组成与空间连续性对地表温度差异的调节作用。
+随后，沿水稻生长季日序刻画不同连片规模稻田与周边非水稻农田之间 LST 差异的动态变化，分析稻田地表温度差异在水稻生长季内的阶段性特征及其与稻田空间连续性的关系。
+最后，从稻田边界向外设置不同距离范围的非水稻农田比较单元，分析邻近农田地表温度与稻田距离之间的关系，为评估稻田温度影响的空间范围提供依据。
 
-\subsection{基于匹配对照的 $\Delta$LST 定义}
 
-本研究以真实水稻生长季内稻田与匹配非稻田农田之间的地表温度差定义稻田降温效应：
+\section{稻田地表降温效应的量化框架}
+\label{sec:dlst_definition}
+
+本节首先界定稻田地表降温效应的比较对象和物理含义，再说明稻田比例、稻田田块规模和非水稻农田梯度环带等空间指标的定义，最后阐述观测型比较框架中的不确定性来源及稳健性评估方法。通过上述方法设计，本文在真实水稻生长季约束下，将稻田与局地农业背景之间的 LST 差异表征为具有明确比较基准的相对地表生物物理效应。
+
+\subsection{稻田地表降温效应 \texorpdfstring{$\Delta LST$}{ΔLST} 的定义}
+% \subsection{基于匹配对照的 $\Delta$LST 定义}
+% \subsection{基于匹配对照的 \texorpdfstring{$\Delta$}{Δ}LST 定义}
+\label{sec:lst_cooling_definition}
+% 定义 ΔLST
+本研究以水稻生长季内稻田与周边匹配非水稻农田之间的 LST 差异定义稻田地表降温效应：
 \begin{equation}
     \Delta LST = LST_{\mathrm{non\text{-}paddy}} - LST_{\mathrm{paddy}},
 \end{equation}
-其中，$LST_{\mathrm{paddy}}$ 表示水稻生长季内稻田像元的平均地表温度，$LST_{\mathrm{non\text{-}paddy}}$ 表示同一时期、同一局地背景下非稻田农田的平均地表温度。$\Delta$LST 大于 0 表明稻田低于周边非稻田农田，即表现为地表降温效应；$\Delta$LST 接近 0 表明二者温度差异较弱；$\Delta$LST 小于 0 则表明稻田相对更暖。这里的温度差异特指稻田相对于局地农业背景的地表温度响应，而非与任意非稻田地表之间的绝对热差。
+其中，$LST_{\mathrm{paddy}}$ 表示稻田像元在其真实水稻生长季内的平均地表温度（land surface temperature, LST），
+$LST_{\mathrm{non\text{-}paddy}}$ 表示同一生长季窗口内、经农田属性、空间邻近和高程相近约束筛选后的匹配非水稻农田平均 LST。
+$\Delta LST>0$ 表示稻田 LST 低于周边非水稻农田，表现为地表降温效应；
+$\Delta LST$ 接近 0 表明二者温度差异较弱；
+$\Delta LST<0$ 表明稻田相对更暖。
+为降低异常观测对均值估计的影响，在计算 $LST_{\mathrm{paddy}}$ 和 $LST_{\mathrm{non\text{-}paddy}}$ 时，分别剔除对应样本中低于第 5 百分位和高于第 95 百分位的 LST 值。
 
-对照组限定为非稻田农田，是因为本章关注的是水稻种植制度相对于其他农田利用方式的地表生物物理效应。若将自然植被、城市建设用地、裸地或所有非稻田区域直接并入对照组，所得差异将同时混合冠层结构、地表粗糙度、不透水面比例、土壤裸露程度及水分条件等多重下垫面差异，削弱对“稻田水分--植被系统”本身的解释力。将比较对象限定在同类农业用地内部，可使 $\Delta$LST 更集中地表征稻田水分管理、作物冠层及其伴随能量交换差异所形成的相对热效应。
+本研究中的 $\Delta LST$ 是稻田相对于周边非水稻农田的局地地表温度差异，反映水稻种植、水分管理和冠层发育共同作用下的相对地表生物物理效应。
+该指标不等同于近地气温变化，也不直接代表全球平均气温响应。
+由于比较对象限定为非水稻农田，$\Delta LST$ 的解释重点集中于稻田与其他农田在水分条件、蒸散发能力、热容量和地表能量分配上的差异。
 
-为提高稻田与对照样本之间的可比性，本研究在匹配过程中设置四类约束。其一，非稻田样本仅从农田像元中选取，以维持土地利用属性一致；其二，非稻田农田与目标稻田之间的距离不超过 20 km，以减弱区域气候背景差异；其三，二者高程差控制在 50 m 以内，以降低地形导致的系统温差；其四，每次比较至少包含 10 个有效非稻田农田像元，以减少局部样本不足引起的随机波动。与此同时，$LST_{\mathrm{paddy}}$ 与 $LST_{\mathrm{non\text{-}paddy}}$ 均在目标稻田像元对应的真实 SOS--EOS 生长季窗口内提取，使比较同时满足空间背景和时间窗口的一致性。
+\subsection{非水稻农田对照样本筛选}
+稻田与非水稻农田之间的 LST 差异可能受到土地覆盖类型、地形、区域气候背景和空间距离等因素影响。为提高稻田与非水稻农田之间的可比性，本研究从以下方面筛选非水稻农田对照样本。
 
-\subsection{稻田比例、田块规模与外溢效应指标}
+第一，对照样本限定为农田像元。
+将自然植被、建设用地、裸地、水体等土地覆盖类型纳入对照组，所得温度差异将同时包含冠层结构、地表粗糙度、不透水面比例、土壤裸露程度和背景水分条件等跨土地覆盖类型导致的下垫面差异，从而削弱 $\Delta LST$ 对稻田水分管理、冠层发育和能量分配差异的解释力。
+因此，本研究仅在非水稻农田中选择对照样本，使比较对象处于相近农业土地利用背景下。
 
-在像元级 $\Delta$LST 定义基础上，本研究进一步引入稻田比例、田块规模和非稻田梯度环带三类空间指标，用于分别刻画稻田在局地景观中的占比、稻田是否连续成片以及降温影响是否可能超出田块边界。
+第二，对照样本限定在稻田周边一定空间范围内。
+空间距离过远会引入区域气候、地形背景和农业制度差异。
+本研究要求非水稻农田与目标稻田之间的最大空间距离不超过 20 km，以提高局地气候背景的一致性。
 
-首先，稻田比例用于表示局地景观中水稻种植所占的面积份额。本文在由 20 $\times$ 20 个 500 m 像元组成的规则网格内计算稻田比例，该尺度约对应 10 km $\times$ 10 km 网格：
-\begin{equation}
-    P_{\mathrm{paddy}}=\frac{N_{\mathrm{paddy}}}{20\times20}\times100\%,
-\end{equation}
-其中，$N_{\mathrm{paddy}}$ 为网格内稻田像元数。随后按照 1\% 间隔对不同网格进行分组，并在各组内统计 $\Delta$LST。该指标反映水稻种植在局地景观中的占比，用于检验稻田降温是否具有面积集聚效应。
+第三，对照样本需满足高程相近条件。
+高程差异会直接影响温度背景，尤其在山地和丘陵稻区可能造成显著 LST 梯度。
+本研究要求稻田与匹配非水稻农田之间的高程差小于 50 m，以降低地形温度梯度对 $\Delta LST$ 的影响。
 
-其次，田块规模用于表征稻田的空间连片程度，而非简单表示水稻面积总量。依据本研究的实现方式，田块规模以连续稻田窗口的边长表示；当 $\mathrm{size}=n$ 时，代表一个由 $n\times n$ 个 MODIS 像元构成的连续稻田区域。例如，$\mathrm{size}=5$ 表示 5 $\times$ 5 个 MODIS 像元组成的连片稻田。该指标用于刻画稻田是否连续成片，并进一步检验局地降温效应是否会随稻田连片程度增强而发生变化。
+第四，对照样本数量需满足统计稳定性要求。
+每次比较至少包含 10 个非水稻农田像元，以降低单个像元异常值或局部噪声对结果的影响。
 
-再次，为描述稻田降温可能向周边非稻田农田传播的空间梯度，本研究统一采用非稻田梯度环带（non-paddy ladder, NPL）指标。$NPL_d$ 表示距离稻田边界第 $d$ 个 MODIS 像元宽度的非稻田环带，$NPL_{d_1-d_2}$ 表示距离稻田边界 $d_1$ 至 $d_2$ 个像元之间的非稻田区域；其下标距离均以 MODIS 像元为单位，单个像元约为 500 m。由此，NPL 可在统一栅格框架下表达从紧邻稻田到远离稻田的空间梯度。
+此外，在实际计算中，本研究不直接采用紧邻稻田边界的非水稻农田作为默认对照样本，而是选择距稻田边界一定距离之外的非水稻农田作为背景对照。
+该处理旨在降低近邻非水稻农田可能受到稻田低温影响而导致对照温度偏低的风险。
+具体距离分级及默认对照范围将在第 \ref{sec:pattern_definition} 节中通过非水稻农田梯度环带指标进行定义。
 
-需要特别说明的是，在默认计算稻田与非稻田农田之间的 $\Delta$LST 时，本文将非稻田对照区设定为 $NPL_{10-30}$，而不采用紧邻稻田的 $NPL_{0-9}$。这是因为距离稻田较近的非稻田区域可能已经受到稻田降温外溢影响；若将其直接作为对照组，非稻田样本的 LST 会向稻田方向偏低，从而低估稻田与非稻田农田之间的真实差异。图 \ref{fig:landscape_metrics_definition} 概括了稻田比例、田块规模和 NPL 的定义关系。
+上述对照组设计旨在将稻田与非水稻农田尽可能置于相近的局地环境中比较。
+类似的邻近匹配对照思想也常用于土地覆盖或土地管理变化的地表温度效应评估，以降低背景气候和地形差异的影响 \cite{Bright2017LCMC,Chen2024Croplands}。
+该设计不能完全消除所有管理差异和背景差异，但可以显著降低土地覆盖类型、空间距离和地形条件造成的混杂，使 $\Delta LST$ 更接近稻田水分--植被系统本身引起的相对地表热效应。
+在后续总体降温强度、气候区差异、生长季过程和景观结构分析中，$\Delta LST$ 均沿用上述匹配对照框架计算。
+
+\subsection{稻田比例、稻田田块规模与非水稻农田梯度环带指标}
+\label{sec:pattern_definition}
+
+在像元级 $\Delta LST$ 定义的基础上，本研究进一步构建稻田比例、稻田田块规模和非水稻农田梯度环带三类空间指标，分别用于刻画稻田在局地景观中的面积占比、稻田空间连续性以及降温影响向周边非水稻农田延伸的可能性。三类指标从不同空间层面补充解释稻田降温效应的异质性。图 \ref{fig:landscape_metrics_definition} 概括了稻田比例、稻田田块规模和非水稻农田梯度环带的定义关系。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\linewidth]{figure/chapter4/landscape_metrics_definition.pdf}
-    \bicaption{稻田比例、田块规模与非稻田梯度环带（NPL）定义示意图}{Schematic definitions of paddy proportion, field size, and non-paddy ladders (NPLs)}
+    \includegraphics[width=0.99\linewidth]{figure/chapter4/NPL_definition.png}
+    \bicaption[稻田比例、稻田田块规模与非水稻农田梯度环带定义]
+    {稻田比例、稻田田块规模与非水稻农田梯度环带定义示意图。
+    a，稻田比例定义为 $20 \times 20$ 个 MODIS 500 m 像元
+    （约 $10~\mathrm{km} \times 10~\mathrm{km}$）内稻田像元数占总像元数的百分比。绿色表示稻田像元或稻田区域，浅米色表示非水稻农田。
+    b，稻田田块规模以连续稻田方形窗口的边长表示，田块规模 $n$ 对应 $n \times n$ 个连续 MODIS 稻田像元。
+    c，$NPL_d$ 表示距稻田边界第 $d$ 个 MODIS 像元处、宽度为 1 个像元的非水稻农田环带；
+    $NPL_{d_1-d_2}$ 表示距稻田边界 $d_1$ 至 $d_2$ 个像元之间的非水稻农田区域。
+    }
+    [Definitions of paddy proportion, paddy field size, and non-paddy cropland ladders]
+    {Definitions of paddy proportion, paddy field size, and non-paddy cropland ladders (NPLs).
+    Green denotes paddy pixels or paddy fields, and light beige denotes non-paddy cropland.
+    a, Paddy proportion is calculated as the percentage of paddy pixels within a $20 \times 20$ MODIS 500 m grid, approximately $10~\mathrm{km} \times 10~\mathrm{km}$.
+    b, Paddy size is represented by the side length of a continuous square paddy window;
+    Paddy size $n$ corresponds to $n \times n$ contiguous MODIS paddy pixels.
+    c, $NPL_d$ denotes the one-pixel-wide non-paddy cropland ring at a distance of
+    $d$ MODIS pixels from the paddy-field boundary, 
+    and $NPL_{d_1-d_2}$ denotes non-paddy cropland between $d_1$ and $d_2$ MODIS pixels from the boundary.
+    }
     \label{fig:landscape_metrics_definition}
 \end{figure}
 
-\subsection{不确定性控制与稳健性评估}
+\subsubsection{稻田比例（Paddy Proportion）}
+稻田比例表示局地景观中水稻种植区域所占的面积份额，用于表征局地景观中稻田覆盖程度。
+本文在由 $20 \times 20$ 个 500 m 像元组成的规则网格内计算稻田比例，该尺度约对应 $10~\mathrm{km} \times 10~\mathrm{km}$ 网格（图 \ref{fig:landscape_metrics_definition}a）：
+\begin{equation}
+    P_{\mathrm{paddy}}=\frac{N_{\mathrm{paddy}}}{20\times20}\times100\%,
+\end{equation}
+其中，$N_{\mathrm{paddy}}$ 为网格内稻田像元数，$P_{\mathrm{paddy}}$ 以百分数表示。
+随后按照 1 个百分点间隔对网格进行分组，第 $k$ 组表示稻田比例位于 $(k-1\%, k\%]$ 的网格，并统计各组在 2003--2020 年期间的平均 $\Delta LST$。
+在稻田比例与 $\Delta LST$ 关系分析中，稻田比例低于 20\% 的网格不纳入统计，以减轻稻田覆盖过低导致的局地景观信号不稳定问题。
 
-稻田降温效应的估计属于基于遥感观测的准对照比较，其不确定性主要来自五个方面：一是 LST 遥感反演误差及其晴空观测属性；二是稻田与非稻田农田之间仍可能存在未被完全控制的背景差异；三是 500 m 水稻图与 1 km LST 数据之间存在尺度支撑不一致；四是空间自相关和时间自相关会导致样本并非完全独立；五是不同气候区下 LST 反演精度并不一致 \cite{Li2013RSELST, Wan2014RSE, Zhang2022ESSDLST}。上述因素决定了 $\Delta$LST 更适合被解释为经严格匹配后的相对地表温度效应，而非完全无偏的绝对温差。
+\subsubsection{稻田田块规模（Paddy Size）}
+稻田田块规模用于表征稻田空间连续性。
+本文以连续稻田像元构成的正方形窗口表示田块规模，田块规模值表示正方形稻田斑块的边长像元数。
+当田块规模为 $n$ 时，表示一个由 $n\times n$ 个 MODIS 像元组成的连续稻田区域（图 \ref{fig:landscape_metrics_definition}b）。
+例如，田块规模为 1 表示约 $500~\mathrm{m} \times 500~\mathrm{m}$ 的稻田像元，田块规模为 5 表示约 $2.5~\mathrm{km} \times 2.5~\mathrm{km}$ 的连续稻田斑块。
+通过比较不同田块规模下的 $\Delta LST$，可以分析稻田空间连续性对降温强度的影响。
 
-样本匹配是降低系统偏差的第一道约束。前述农田属性限制、空间距离限制、高程差限制以及最小样本数要求，分别用于减少土地覆盖差异、区域气候差异、地形差异和小样本随机波动对估计结果的影响。由于 GlobalRice500 提供逐像元真实生长季信息，稻田与非稻田对照的 LST 提取还可被限定在相同 SOS--EOS 时间窗口内，从而进一步降低固定历月比较带来的时间错配风险。
+\subsubsection{非水稻农田梯度环带（Non-Paddy Ladder, NPL）}
+非水稻农田梯度环带（non-paddy ladder, NPL）按照距稻田边界的距离，将周边非水稻农田像元划分为一系列环带状比较单元；为后续分析不同距离处非水稻农田的地表温度差异提供空间分组基础（图 \ref{fig:landscape_metrics_definition}c）。
+$NPL_d$ 表示距稻田边界 $d$ 个 MODIS 像元处、宽度为 1 个 MODIS 像元的非水稻农田环带。
+$NPL_{d_1-d_2}$ 表示距稻田边界 $d_1$ 至 $d_2$ 个像元之间的非水稻农田区域。
+所有下标距离均以 MODIS 像元为单位，单个像元约为 500 m。
+通过比较不同 $NPL_d$ 中非水稻农田的 LST，可以分析稻田邻近区域的地表温度是否随距稻田边界距离的变化。
 
-统计不确定性的估计依据数据聚合层级分别处理。对于 500 m 分辨率的 $\Delta$LST 估计，本文采用 block bootstrap 方法，同时考虑空间和时间自相关：以 64 $\times$ 64 个像元组成的空间块和一个日历年构成联合抽样单元，重复抽样 10,000 次，并据此计算均值标准误（standard error of the mean, SEM）和 95\% 置信区间（95\% confidence interval, 95\% CI）。对于稻田比例分组结果，由于样本已经聚合至 20 $\times$ 20 像元网格，本文采用 Student's $t$ 检验评估其统计不确定性。
+在默认计算稻田与非水稻农田之间的 $\Delta LST$ 时，本文将 $LST_{\mathrm{non\text{-}paddy}}$ 定义为 $NPL_{10-30}$ 内非水稻农田的平均 LST，而不使用紧邻稻田的 $NPL_{0-9}$。
+该处理主要考虑到近邻非水稻农田可能受到稻田降温外溢影响，其 LST 可能已相对于更远处非水稻农田偏低。若将这些近邻区域直接作为对照，$LST_{\mathrm{non\text{-}paddy}}$ 会受到外溢降温影响，从而低估稻田与非水稻农田之间的温度差异。
+因此，在总体 $\Delta LST$ 估计以及稻田比例和田块规模分析中，本文默认采用相对远离稻田边界的 $NPL_{10-30}$ 作为非水稻农田对照；
+在专门分析外溢效应时，则分别计算不同 $NPL_d$ 环带的 LST 差异，以刻画稻田降温影响随距离增加的变化过程。
 
-除总体不确定性估计外，本文还将气候区分层作为稳健性检验。考虑到卫星 LST 反演精度可能随气候背景而变化，本研究进一步按照 Köppen--Geiger 气候区对 $\Delta$LST 进行分层统计，并结合不同气候区的 LST 反演误差水平评估结果可靠性。该处理用于检验后文所述稻田降温估计是否会受到气候区间反演精度差异的系统影响，而不在本节提前引入结果判断。
+\subsection{统计不确定性与敏感性评估}
+% 不确定性来源
+本研究对稻田与非水稻农田的 LST 比较建立在真实水稻生长季和对照组匹配条件下，能够减少固定时间窗口、土地覆盖差异和地形差异带来的混杂影响；然而，在全球尺度遥感研究中，$\Delta LST$ 估计仍受到数据质量、空间尺度和样本匹配条件等因素的影响。
+一方面，LST 产品（见第 \ref{sec:lst_data} 节）本身存在反演误差，且热红外观测主要反映晴空条件下的地表热状态，难以完全代表全天候地表温度 \cite{Zhang2022ESSDLST}。
+另一方面，尽管本文通过农田属性、空间距离、高程差和样本数量等约束提高对照样本可比性，稻田与非水稻农田之间仍可能存在未被完全控制的局地背景差异，例如土壤水分、灌溉条件、反照率和农田管理方式等。
+因此，本节在前文稻田--非水稻农田匹配对照设计的基础上，进一步说明本研究所采用的统计不确定性计算和气候分区敏感性评估方法。
 
-\section{全球稻田地表降温时间动态分析}
+全球 $\Delta LST$ 估计基于大量空间邻近且跨年重复观测的遥感样本。
+相邻像元通常共享相似的气候、地形和农田背景，同一区域不同年份的 LST 差异也可能受到连续气候条件、种植制度和观测质量的共同影响。
+因此，$\Delta LST$ 样本可能同时存在空间相关性和时间相关性，若直接按照独立样本估计不确定性，可能低估全球均值的标准误。
+基于此，本研究采用时空分块自助抽样法（block bootstrap）评估统计不确定性。
+具体而言，以 $64\times64$ 个 500 m 像元组成的空间块和一个日历年构成联合抽样单元，每次重抽样后重新计算 $\Delta LST$ 均值，重复抽样 10,000 次，随后根据 bootstrap 分布估计均值标准误（standard error of the mean, SEM）和 95\% 置信区间（95\% confidence interval, 95\% CI）。
+除特别说明外，本文结果中 ``$\pm$'' 后的数值均表示 SEM。
+该方法能够降低空间邻近像元和连续年份样本非独立性对不确定性估计的影响，使全球平均 $\Delta LST$ 的置信区间更符合遥感大样本数据的空间--时间相关结构。
+此外，对于稻田比例的分组量化结果，由于样本已经聚合至 20 $\times$ 20 像元网格，本文采用 Student's $t$ 检验评估其统计不确定性。
 
-\subsection{全球尺度稻田降温格局}
+不同气候背景下，LST 反演误差和误差结构可能存在差异，尤其在湿润热带区、干旱区、温带区和寒温带区，云污染、地表异质性、地表发射率和大气条件均可能影响 LST 反演精度。
+因此，本研究基于 Köppen--Geiger 气候区开展分区敏感性分析，评估全球稻田降温估计是否受到气候区间 LST 精度差异的系统影响。
+各分区分别统计日间和夜间 $\Delta LST$ 的均值、SEM 和 95\% 置信区间，以检验稻田降温信号的方向以及在不同气候背景下的稳健性。
 
-\subsubsection{白天 LST 降温格局}
+综上，本文通过对照组匹配、异常值剔除、统计不确定性估计和敏感性分析，共同控制和评估 $\Delta LST$ 估计中的主要不确定性。
+在结果解释中，$\Delta LST$ 表征的是稻田相对于匹配非水稻农田的地表温度差异，主要用于反映稻田水分--植被系统的相对地表生物物理效应。该指标的解释范围由匹配对照条件、遥感数据尺度和 LST 观测属性共同限定；涉及稻田综合气候效应时，还需结合温室气体排放、辐射强迫和水资源消耗等过程开展统一评估。
 
-2003--2020 年，全球稻田生长季白天平均 $\Delta$LST 年际变化范围为 0.21--0.27 $^{\circ}\mathrm{C}$，显示出广泛而持续的地表降温效应。图 \ref{fig:global_daytime_delta_lst} 表明，正 $\Delta$LST 广泛分布于主要稻作区，但其强度具有明显空间异质性。稻田集中度较高、灌溉水分输入充分或周边旱作农田水分受限的地区，通常表现出更强的相对降温；在湿润背景下，对照农田同样具备较高蒸散发能力，稻田与非稻田之间的温差则相对收敛。全球稻田降温强度因此受到景观结构和背景水分条件的共同调制。
 
-按 Köppen--Geiger 气候区统计，干旱气候区白天平均 $\Delta$LST 最高，为 0.4729 $^{\circ}\mathrm{C}$；雪气候区为 0.2592 $^{\circ}\mathrm{C}$；暖温带和赤道气候区分别为 0.1372 $^{\circ}\mathrm{C}$ 与 0.1260 $^{\circ}\mathrm{C}$。这种分异表明，稻田相对降温幅度与背景农田的水分限制程度密切相关：当非稻田农田蒸散发更易受水分胁迫时，淹水稻田所体现出的潜热通量优势更为突出。
+\section{全球稻田地表降温的总体格局}
+本节从空间分布、年际变化、昼夜差异和分区敏感性四个方面分析全球稻田地表温度效应的总体格局。
+通过多年平均空间分布和逐年统计结果，评估稻田与周边非水稻农田之间日间 LST 差异的全球一致性和年际稳定性；
+通过日间与夜间结果对比，识别稻田地表温度效应的昼夜不对称特征；
+通过不同分区统计，检验该温度差异在主要气候背景下的稳健性及其区域差异。
+
+\subsection{日间稻田地表降温的空间分布与年际稳定性}
+% 空间分布
+本节从空间分布和年际变化两个层面刻画全球稻田生长季日间地表降温的总体特征。
+2003--2020 年全球水稻生长季日间平均 $\Delta LST$ 的空间分布表明，稻田相对于周边非水稻农田表现出广泛的地表降温效应（图 \ref{fig:global_daytime_dlst}），说明稻田地表降温现象是具有全球尺度一致性的地表生物物理响应。
+同时，降温强度在不同区域之间存在差异，说明稻田降温效应在不同稻区具有不同幅度，并受到局地水分背景、稻田空间集聚程度、田块连续性以及周边非水稻农田蒸散发能力等因素的共同调节。
+在稻田集中度较高、灌溉水分输入较充分或周边非水稻农田水分受限较强的地区，稻田水层蒸发和水稻冠层蒸腾所带来的潜热通量优势更容易转化为可观测的 LST 差异，从而表现出较强的相对降温。
+在湿润背景较强、对照农田同样具有较高蒸散发能力的区域，稻田与非水稻农田之间的温度差异则相对较弱；但也表现出稳定的正值 $\Delta LST$，其幅度受到背景湿度、云雨条件、作物制度和非水稻农田水分状态共同影响。
+由此可见，全球稻田降温效应具有普遍性，同时受区域水热背景和农田管理条件调节。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\linewidth]{figure/chapter7/global_daytime_delta_lst.pdf}
-    \caption{全球水稻生长季白天平均 $\Delta$LST 空间分布图}
-    \label{fig:global_daytime_delta_lst}
+    \includegraphics[width=0.99\linewidth]{figure/chapter4/mean_cooling_day.png}
+    \bicaption[全球水稻生长季日间平均 $\Delta LST$ 空间分布]
+    {全球水稻生长季日间平均 $\Delta LST$ 空间分布。$\Delta LST$ 表示水稻生长季内周围非水稻农田与稻田之间的 LST 差值，正值表示稻田相对于周边非水稻农田更冷。}
+    [Spatial distribution of mean daytime $\Delta LST$ during rice growing seasons]
+    {Spatial distribution of mean daytime $\Delta LST$ during rice growing seasons. $\Delta LST$ denotes the LST difference between surrounding non-paddy croplands and paddy fields during rice growing seasons; positive values indicate cooler paddy fields relative to surrounding non-paddy croplands.}
+    \label{fig:global_daytime_dlst}
 \end{figure}
 
-\subsubsection{夜间 LST 差异}
+% 年际稳定性
+2003--2020 年间，全球水稻生长季日间平均 $\Delta LST$ 始终保持为正值，年均值介于 0.2146--0.2699 $^{\circ}\mathrm{C}$ 之间（表 \ref{tab:global_daytime_delta_lst_uncertainty}）。
+其中，2013 年均值最低，为 0.21 $^{\circ}\mathrm{C}$；2007 年均值最高，为 0.27 $^{\circ}\mathrm{C}$。
+尽管不同年份之间存在一定波动，所有年份的日间平均 $\Delta LST$ 均明显高于 0，说明稻田相对于周边非水稻农田的日间地表降温效应在整个研究期内持续存在。
+从统计不确定性看，各年份均值标准误较小，约为 0.0057--0.0064 $^{\circ}\mathrm{C}$，95\% 置信区间均未跨越 0，说明全球平均日间降温信号具有较强的统计稳定性。
+空间分布和年际变化结果共同说明，稻田日间地表降温是全球主要稻作区中稳定存在的地表生物物理信号。
 
-全球夜间 $\Delta$LST 的量级远小于白天，2003--2020 年年平均值约为 0.01--0.02 $^{\circ}\mathrm{C}$。图 \ref{fig:global_nighttime_delta_lst} 显示，大多数稻区夜间温差接近零，空间格局也明显弱化。分气候区结果进一步说明这种近零特征并非简单的平均抵消：赤道、干旱和暖温带气候区夜间平均 $\Delta$LST 均为弱正值，雪气候区则为弱负值。整体而言，夜间信号缺乏白天那样稳定而显著的全球一致性，说明稻田降温最主要的可观测表达发生在白天蒸散发活跃阶段。
+\begin{longtable}{@{}>{\centering\arraybackslash}p{0.12\textwidth}>{\centering\arraybackslash}p{0.14\textwidth}>{\centering\arraybackslash}p{0.18\textwidth}>{\centering\arraybackslash}p{0.18\textwidth}>{\centering\arraybackslash}p{0.18\textwidth}@{}}
+    \bicaption{2003--2020 年全球稻田生长季白天平均 $\Delta$LST 的不确定性估计}{Uncertainty of global mean daytime $\Delta$LST during rice growing seasons, 2003--2020} \label{tab:global_daytime_delta_lst_uncertainty} \\
+    \toprule
+    年份 & 均值 ($^{\circ}\mathrm{C}$) & 均值标准误 ($^{\circ}\mathrm{C}$) & 95\% 置信区间下限 ($^{\circ}\mathrm{C}$) & 95\% 置信区间上限 ($^{\circ}\mathrm{C}$) \\
+    \midrule
+    \endfirsthead
+    \multicolumn{5}{c}{\zihao{5}\tablename\ \thetable{}\nobreakspace{}--\nobreakspace{}续表} \\
+    \toprule
+    年份 & 均值 ($^{\circ}\mathrm{C}$) & 均值标准误 ($^{\circ}\mathrm{C}$) & 95\% 置信区间下限 ($^{\circ}\mathrm{C}$) & 95\% 置信区间上限 ($^{\circ}\mathrm{C}$) \\
+    \midrule
+    \endhead
+    \bottomrule
+    \endfoot
+    2003 & 0.2233 & 0.005774 & 0.2121 & 0.2348 \\
+    2004 & 0.2498 & 0.006438 & 0.2372 & 0.2624 \\
+    2005 & 0.2320 & 0.006214 & 0.2200 & 0.2444 \\
+    2006 & 0.2326 & 0.005756 & 0.2216 & 0.2438 \\
+    2007 & 0.2699 & 0.006332 & 0.2577 & 0.2822 \\
+    2008 & 0.2336 & 0.005727 & 0.2225 & 0.2450 \\
+    2009 & 0.2437 & 0.006050 & 0.2321 & 0.2557 \\
+    2010 & 0.2288 & 0.005855 & 0.2172 & 0.2402 \\
+    2011 & 0.2285 & 0.005929 & 0.2171 & 0.2404 \\
+    2012 & 0.2451 & 0.006217 & 0.2330 & 0.2572 \\
+    2013 & 0.2146 & 0.005712 & 0.2037 & 0.2260 \\
+    2014 & 0.2379 & 0.006058 & 0.2263 & 0.2498 \\
+    2015 & 0.2399 & 0.006035 & 0.2283 & 0.2517 \\
+    2016 & 0.2339 & 0.005870 & 0.2226 & 0.2456 \\
+    2017 & 0.2334 & 0.006113 & 0.2215 & 0.2455 \\
+    2018 & 0.2561 & 0.006076 & 0.2443 & 0.2681 \\
+    2019 & 0.2278 & 0.005988 & 0.2162 & 0.2396 \\
+    2020 & 0.2336 & 0.005908 & 0.2224 & 0.2455 \\
+\bottomrule
+\end{longtable}
+
+\subsection{夜间 \texorpdfstring{$\Delta LST$}{ΔLST} 与昼夜不对称}
+与日间相比，全球水稻生长季夜间平均 $\Delta LST$ 的量级显著减小。
+2003--2020 年间，全球水稻生长季夜间平均 $\Delta LST$ 约为 0.01--0.02 $^{\circ}\mathrm{C}$，远低于日间平均降温强度（表 \ref{tab:global_nighttime_delta_lst_uncertainty}）。
+图 \ref{fig:global_nighttime_delta_lst} 进一步显示，大多数稻作区夜间 $\Delta LST$ 接近零，空间格局明显弱化，说明稻田与周边非水稻农田在夜间的地表热状态差异较小。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\linewidth]{figure/chapter7/global_nighttime_delta_lst.pdf}
-    \caption{全球水稻生长季夜间平均 $\Delta$LST 空间分布图}
+    \includegraphics[width=0.95\linewidth]{figure/chapter4/mean_cooling_night.png}
+    \bicaption[2003--2020年全球水稻生长季夜间平均 $\Delta LST$ 空间分布]
+    {2003--2020年全球水稻生长季夜间平均 $\Delta LST$ 空间分布。$\Delta LST$ 表示水稻生长季内周围非水稻农田与稻田之间的 LST 差值。与日间相比，夜间 $\Delta LST$ 的量级明显减小，表明稻田降温效应具有显著昼夜不对称性。}
+    [Spatial distribution of mean nighttime $\Delta LST$ during rice growing seasons during 2003--2020]
+    {Spatial distribution of mean nighttime $\Delta LST$ during rice growing seasons during 2003--2020. $\Delta LST$ denotes the LST difference between surrounding non-paddy croplands and paddy fields during rice growing seasons. Compared with daytime, nighttime $\Delta LST$ is substantially smaller, indicating a pronounced diurnal asymmetry in paddy-induced cooling.}
     \label{fig:global_nighttime_delta_lst}
 \end{figure}
 
-昼夜结果相互印证了稻田降温的过程属性。白天显著正值、夜间接近零的组合表明，稻田的地表热效应与太阳辐射驱动下的蒸散发过程高度耦合；若仅考察日平均或固定月份平均，便可能掩盖这一关键机制信息。
+\begin{longtable}{@{}>{\centering\arraybackslash}p{0.12\textwidth}>{\centering\arraybackslash}p{0.14\textwidth}>{\centering\arraybackslash}p{0.18\textwidth}>{\centering\arraybackslash}p{0.18\textwidth}>{\centering\arraybackslash}p{0.18\textwidth}@{}}
+    \bicaption{2003--2020 年全球稻田生长季夜间平均 $\Delta$LST 的不确定性估计}{Uncertainty of global mean nighttime $\Delta$LST during rice growing seasons, 2003--2020} \label{tab:global_nighttime_delta_lst_uncertainty} \\
+    \toprule
+    年份 & 均值 ($^{\circ}\mathrm{C}$) & 均值标准误 ($^{\circ}\mathrm{C}$) & 95\% 置信区间下限 ($^{\circ}\mathrm{C}$) & 95\% 置信区间上限 ($^{\circ}\mathrm{C}$) \\
+    \midrule
+    \endfirsthead
+    \multicolumn{5}{c}{\zihao{5}\tablename\ \thetable{}\nobreakspace{}--\nobreakspace{}续表} \\
+    \toprule
+    年份 & 均值 ($^{\circ}\mathrm{C}$) & 均值标准误 ($^{\circ}\mathrm{C}$) & 95\% 置信区间下限 ($^{\circ}\mathrm{C}$) & 95\% 置信区间上限 ($^{\circ}\mathrm{C}$) \\
+    \midrule
+    \endhead
+    \bottomrule
+    \endfoot
+2003 & 0.007687 & 0.001875 & 0.003956 & 0.01136 \\
+2004 & 0.008449 & 0.002065 & 0.004474 & 0.01253 \\
+2005 & 0.01808 & 0.001732 & 0.01470 & 0.02150 \\
+2006 & 0.01311 & 0.001741 & 0.009729 & 0.01658 \\
+2007 & 0.01298 & 0.002028 & 0.009019 & 0.01695 \\
+2008 & 0.01819 & 0.001794 & 0.01457 & 0.02170 \\
+2009 & 0.01251 & 0.001740 & 0.009115 & 0.01595 \\
+2010 & 0.01664 & 0.001902 & 0.01292 & 0.02042 \\
+2011 & 0.009387 & 0.001801 & 0.005846 & 0.01282 \\
+2012 & 0.01318 & 0.001876 & 0.009485 & 0.01685 \\
+2013 & 0.01103 & 0.001769 & 0.007612 & 0.01452 \\
+2014 & 0.01390 & 0.001698 & 0.01057 & 0.01727 \\
+2015 & 0.01575 & 0.001837 & 0.01208 & 0.01932 \\
+2016 & 0.01306 & 0.001773 & 0.009581 & 0.01658 \\
+2017 & 0.01167 & 0.001944 & 0.007949 & 0.01553 \\
+2018 & 0.01073 & 0.001756 & 0.007292 & 0.01415 \\
+2019 & 0.01405 & 0.001813 & 0.01050 & 0.01764 \\
+2020 & 0.02231 & 0.001862 & 0.01863 & 0.02598 \\
+\bottomrule
+\end{longtable}
 
-\subsection{生长季内降温过程}
+这种昼夜差异揭示了稻田降温效应的过程属性。
+日间太阳辐射充足，稻田水层蒸发、湿润土壤蒸发和水稻冠层蒸腾共同增强潜热通量，使更多可用能量以水汽相变形式释放，从而降低稻田 LST。
+夜间太阳辐射消失，蒸散发显著减弱，稻田相对于非水稻农田的潜热通量优势难以继续形成明显的 LST 差异。
 
-将不同稻区的逐日结果统一转换为 DOS 后，白天 $\Delta$LST 在生长季内呈现稳定的倒 V 型轨迹。移栽初期，冠层尚未充分形成，稻田虽有浅水层蒸发，但与周边农田的温度差仍相对有限；随着冠层扩展和蒸腾增强，$\Delta$LST 持续升高，并在 DOS 60--100 附近达到峰值；进入灌浆成熟阶段后，冠层衰老和蒸腾减弱使降温效应逐步回落。图 \ref{fig:growing_season_delta_lst_curve} 所示的时间轨迹与水稻冠层发育过程高度一致，进一步说明真实生长季约束对于识别温度效应峰值具有不可替代的作用。
+\subsection{不同气候区的降温差异与敏感性评估}
+卫星 LST 反演精度、背景农田水分条件、潜在蒸散发需求和水稻生长过程均可能随气候背景而变化。
+在全球总体格局和昼夜差异分析的基础上，本研究进一步按照 Köppen--Geiger 主要气候区（\ref{fig:main_climate_zones}）分区统计稻田 $\Delta LST$，以检验稻田地表降温信号在不同气候背景下的差异及其稳健性。
+本节中的 $\Delta LST$ 沿用第 \ref{sec:lst_cooling_definition} 节定义，表示水稻生长季内匹配非水稻农田与稻田之间的 LST 差值，即非水稻农田 LST 减去稻田 LST。
+因此，$\Delta LST$ 大于 0 表示稻田 LST 低于周边非水稻农田，体现为相对地表降温效应。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\linewidth]{figure/chapter7/growing_season_delta_lst_curve.pdf}
-    \caption{全球主要稻区生长季内白天 $\Delta$LST 动态变化曲线}
-    \label{fig:growing_season_delta_lst_curve}
+    \includegraphics[width=0.95\linewidth]{figure/chapter4/main_climate_zones_2017.png}
+    \bicaption[全球Köppen-Geiger主要气候区]{全球Köppen-Geiger主要气候区。数据来自 \url{https://koeppen-geiger.vu-wien.ac.at/}，获取于 2025年 9 月 6 日。}[Köppen-Geiger Main Climate Zones]{Köppen-Geiger Main Climate Zones. The data is downloaded from \url{https://koeppen-geiger.vu-wien.ac.at/}, accessed on September 6, 2025.}
+    \label{fig:main_climate_zones}
 \end{figure}
 
-从方法意义看，DOS 轨迹将不同历日播栽的稻区置于统一的物候坐标中，使双季稻、多季稻和跨纬度稻区能够在同一框架内比较。固定月份方法若与峰值阶段错位，将不可避免地低估最具代表性的降温信号。
+分区统计结果表明，日间稻田地表降温在主要 Köppen--Geiger 分区中均保持稳定的正值（表 \ref{tab:climate_day_dlst_uncertainty}）。
+干旱气候区日间平均 $\Delta LST$ 最高，为 0.4729 $^{\circ}\mathrm{C}$；雪气候区次之，为 0.2592 $^{\circ}\mathrm{C}$；暖温带气候区和赤道气候区分别为 0.1372 $^{\circ}\mathrm{C}$ 和 0.1260 $^{\circ}\mathrm{C}$。
+各分区日间 $\Delta LST$ 的 95\% 置信区间均未跨越 0，且均值标准误较小，说明在不同 LST 反演误差背景和不同气候环境下，稻田相对于周边非水稻农田的日间低温特征均能够被稳定观测到。
 
-\section{全球稻田地表降温空间格局分析}
+\begin{table}[htbp]
+    \centering
+    \bicaption{不同 Köppen--Geiger 气候区日间平均 $\Delta$LST 的不确定性估计}
+    {Uncertainty of mean daytime $\Delta$LST across Köppen--Geiger climate zones}
+    \label{tab:climate_day_dlst_uncertainty}
+    % \small
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}
+                    >{\centering\arraybackslash}p{0.14\textwidth}
+                    >{\centering\arraybackslash}p{0.14\textwidth}
+                    >{\centering\arraybackslash}p{0.18\textwidth}
+                    >{\centering\arraybackslash}p{0.18\textwidth}@{}}
+        \toprule
+        主要气候区
+        & $\Delta$LST 均值 ($^{\circ}\mathrm{C}$) 
+        & 均值标准误 ($^{\circ}\mathrm{C}$) 
+        & 95\% 置信区间下限 ($^{\circ}\mathrm{C}$) 
+        & 95\% 置信区间上限 ($^{\circ}\mathrm{C}$) \\
+        \midrule
+        赤道气候 & 0.1260 & 0.003566 & 0.1190 & 0.1330 \\
+        干旱气候 & 0.4729 & 0.01196  & 0.4497 & 0.4962 \\
+        暖温带气候 & 0.1372 & 0.003946 & 0.1296 & 0.1450 \\
+        寒冷气候 & 0.2592 & 0.01114  & 0.2380 & 0.2817 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-\subsection{稻田比例对降温强度的影响}
+% \begin{table}[htbp]
+%     \centering
+%     \bicaption{不同 Köppen--Geiger 气候区内 $\Delta$LST 的不确定性估计}{Uncertainty of $\Delta$LST across Köppen--Geiger climate zones} \label{tab:climate_zone_delta_lst_uncertainty}
+%     \small
+%     \setlength{\tabcolsep}{3pt}
+%     \begin{tabular}{@{}>{\centering\arraybackslash}p{0.06\textwidth}>{\raggedright\arraybackslash}p{0.12\textwidth}>{\centering\arraybackslash}p{0.07\textwidth}>{\centering\arraybackslash}p{0.07\textwidth}>{\centering\arraybackslash}p{0.07\textwidth}>{\centering\arraybackslash}p{0.08\textwidth}>{\centering\arraybackslash}p{0.09\textwidth}>{\centering\arraybackslash}p{0.09\textwidth}>{\centering\arraybackslash}p{0.09\textwidth}@{}}
+%         \toprule
+%         时段 & 气候区 & \multicolumn{3}{c}{LST 均方根误差 ($^{\circ}\mathrm{C}$)} & $\Delta$LST 均值 ($^{\circ}\mathrm{C}$) & 均值标准误 ($^{\circ}\mathrm{C}$) & 95\% 置信区间下限 ($^{\circ}\mathrm{C}$) & 95\% 置信区间上限 ($^{\circ}\mathrm{C}$) \\
+%         \cmidrule(lr){3-5}
+%         & & 25\% 排除 & 50\% 排除 & 75\% 排除 & & & & \\
+%         \midrule
+%         日间 & 赤道气候区 & 1.97 & 1.96 & 2.03 & 0.1260 & 0.003566 & 0.1190 & 0.1330 \\
+%         日间 & 干旱气候区 & 1.40 & 1.42 & 1.64 & 0.4729 & 0.01196 & 0.4497 & 0.4962 \\
+%         日间 & 暖温带气候区 & 1.81 & 1.79 & 2.05 & 0.1372 & 0.003946 & 0.1296 & 0.1450 \\
+%         日间 & 雪气候区 & 2.17 & 2.25 & 2.50 & 0.2592 & 0.01114 & 0.2380 & 0.2817 \\
+%         夜间 & 赤道气候区 & 1.24 & 1.21 & 1.33 & 0.01110 & 0.001400 & 0.008387 & 0.01386 \\
+%         夜间 & 干旱气候区 & 1.03 & 1.19 & 1.30 & 0.01939 & 0.002917 & 0.01365 & 0.02520 \\
+%         夜间 & 暖温带气候区 & 1.11 & 1.23 & 1.40 & 0.01773 & 0.001471 & 0.01485 & 0.02058 \\
+%         夜间 & 雪气候区 & 1.80 & 1.81 & 1.97 & -0.02839 & 0.005069 & -0.03829 & -0.01855 \\
+%         \bottomrule
+%     \end{tabular}
+% \end{table}
 
-10 km 网格尺度上，稻田比例与白天 $\Delta$LST 呈显著正相关。图 \ref{fig:rice_fraction_regression} 显示，稻田比例每增加 1\%，白天 $\Delta$LST 平均增加约 0.0014 $^{\circ}\mathrm{C}$。这一关系说明，稻田在局地景观中的面积优势越明显，其对地表能量分配的影响越容易在网格平均温度中显现。由于全球稻区在稻田比例上存在广泛梯度，比例差异本身即可解释部分区域间降温强度的不均一性。
+日间 $\Delta LST$ 的分区差异反映了稻田降温效应对背景水分环境和能量条件的响应。
+在干旱气候区，非水稻农田蒸散发更容易受到水分限制，水稻生长季内稻田较高的田面水分和冠层蒸腾能力使其潜热通量优势更加突出，因而形成更强的相对降温幅度。
+雪气候区日间 $\Delta LST$ 居次，可能与水稻生长季主要集中在暖季有关；在该阶段，较强的日间辐射和活跃的蒸散发过程有利于稻田地表降温信号形成。
+暖温带和赤道气候区的日间 $\Delta LST$ 相对较低，表明当对照农田具有较高植被覆盖度或较充足水分供应时，稻田与非水稻农田之间的 LST 差异会相对收敛。
+已有灌溉研究也表明，人为水分输入对地表热环境的调节强度与背景干湿状况和潜在蒸散发需求密切相关 \cite{McDermid2023Irrigation,Bright2017LCMC}。
+
+夜间 $\Delta LST$ 的分区结果进一步体现了稻田降温效应的昼夜差异（表 \ref{tab:climate_night_dlst_uncertainty}）。
+赤道、干旱和暖温带气候区夜间平均 $\Delta LST$ 分别为 0.01110 $^{\circ}\mathrm{C}$、0.01939 $^{\circ}\mathrm{C}$ 和 0.01773 $^{\circ}\mathrm{C}$，均为接近零的弱正值；雪气候区夜间平均 $\Delta LST$ 为 -0.02839 $^{\circ}\mathrm{C}$，表现为弱负值。
+与日间结果相比，夜间 $\Delta LST$ 的绝对量级明显较小，不同分区之间的方向也不完全一致。
+这一结果与前文夜间总体格局相吻合，说明稻田地表降温的主要可观测表达集中在日间太阳辐射驱动下的蒸散发活跃阶段。
+
+\begin{table}[htbp]
+    \centering
+    \bicaption{不同 Köppen--Geiger 气候区夜间平均 $\Delta$LST 的不确定性估计}
+    {Uncertainty of mean nighttime $\Delta$LST across Köppen--Geiger climate zones}
+    \label{tab:climate_night_dlst_uncertainty}
+    % \small
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}
+                    >{\centering\arraybackslash}p{0.14\textwidth}
+                    >{\centering\arraybackslash}p{0.14\textwidth}
+                    >{\centering\arraybackslash}p{0.18\textwidth}
+                    >{\centering\arraybackslash}p{0.18\textwidth}@{}}
+        \toprule
+        主要气候区
+        & $\Delta$LST 均值 ($^{\circ}\mathrm{C}$) 
+        & 均值标准误 ($^{\circ}\mathrm{C}$) 
+        & 95\% 置信区间下限 ($^{\circ}\mathrm{C}$) 
+        & 95\% 置信区间上限 ($^{\circ}\mathrm{C}$) \\
+        \midrule
+        赤道气候 & 0.01110  & 0.001400 & 0.008387 & 0.01386 \\
+        干旱气候 & 0.01939  & 0.002917 & 0.01365  & 0.02520 \\
+        暖温带气候 & 0.01773  & 0.001471 & 0.01485  & 0.02058 \\
+        寒冷气候 & -0.02839 & 0.005069 & -0.03829 & -0.01855 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+综合来看，Köppen--Geiger 分区结果同时支持稻田地表降温效应的全球一致性和区域差异性。
+一方面，所有主要分区的日间 $\Delta LST$ 均为正值，表明稻田日间地表降温并非由单一气候背景主导。
+另一方面，不同分区之间降温强度差异明显，说明全球平均 $\Delta LST$ 是不同水分背景、能量条件和稻作系统共同作用后的综合结果。
+因此，稻田地表降温效应具有稳定的日间方向性，同时受到区域气候背景调制；在解释其生态气候意义时，应同时关注全球尺度的总体降温信号和不同分区下的强度差异。
+
+
+\section{景观结构对稻田降温效应的调控}
+
+总体格局分析表明，全球稻田在水稻生长季日间相对于匹配非水稻农田表现出稳定的地表降温效应，且该效应在不同区域和气候背景下存在空间差异。
+除气候背景和水分条件外，稻田在局地景观中的空间组织方式也可能影响其地表温度效应。
+在稻田覆盖度较高或空间连片性较强的区域，田面水、湿润土壤和水稻冠层构成的水--植被复合下垫面具有更连续的空间表达，其蒸散发增强和能量分配调整更容易在景观尺度上形成可观测的 LST 差异。
+
+基于此，本节基于第 \ref{sec:dlst_definition} 节中的 $\Delta LST$ 定义和量化框架，从局地景观组成和稻田空间连续性两个方面分析稻田降温强度的变化。
+其中，稻田比例用于表征局地景观中稻田覆盖程度，稻田田块规模用于表征稻田斑块的空间连片性。
+二者分别对应稻田下垫面的面积占比和连续分布特征，可用于解释日间 $\Delta LST$ 在不同稻区和不同景观条件下的空间异质性。
+
+\subsection{稻田比例对稻田降温强度的影响}
+
+基于约 $10~\mathrm{km} \times 10~\mathrm{km}$ 网格的分析表明，日间 $\Delta LST$ 随稻田比例增加而增强（图 \ref{fig:proportion_regression}）。
+回归结果显示，稻田比例每增加 1\%，日间 $\Delta LST$ 约增加 $0.0014~^{\circ}\mathrm{C}$。
+该关系说明，当局地景观中稻田覆盖度较高时，稻田水分--植被复合下垫面对地表能量分配的影响更容易在网格尺度上表现出来。
+
+稻田比例对稻田降温强度的影响反映了局地景观组成对地表能量分配的调节作用。
+在稻田比例较高的区域，田面水、湿润土壤和水稻冠层构成的水--植被复合下垫面在局地景观中占据更大份额，水层蒸发、土壤蒸发和冠层蒸腾对潜热通量的贡献更容易在网格尺度上表现为较低的平均 LST。
+稻田比例较低或空间较破碎的区域，稻田像元更容易受到周边非水稻农田、建设用地、裸地或其他地表类型的边界影响，局地蒸散发增强所产生的低温信号可能被周边较暖或热力性质不同的下垫面稀释，网格平均温度更多反映混合下垫面的综合状态。
+因此，稻田比例与 $\Delta LST$ 的正相关关系表明，稻田地表降温效应不仅取决于稻田是否存在，也取决于稻田在局地景观中的覆盖程度和下垫面主导性。
+
+对于全球稻区而言，不同区域之间的稻田比例差异可以解释部分降温强度的空间异质性。
+从土地系统变化角度看，稻田面积扩张或收缩对地表温度的影响不仅取决于面积变化本身，还取决于这种变化是否改变局地景观中稻田水--植被复合下垫面的相对主导程度。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\linewidth]{figure/chapter7/rice_fraction_regression.pdf}
-    \caption{10 km 网格内稻田比例与白天 $\Delta$LST 回归关系图}
-    \label{fig:rice_fraction_regression}
+    \includegraphics[width=0.7\linewidth]{figure/chapter4/paddy_proportion.png}
+    \bicaption[稻田比例与日间 $\Delta LST$ 回归关系]
+    {稻田比例与日间 $\Delta LST$ 回归关系。每个点表示一个稻田比例分组的多年平均值，点的颜色表示均值标准误（SEM）。}
+    [Relationship between paddy proportion and daytime $\Delta LST$]
+    {Relationship between paddy proportion and daytime $\Delta LST$. Each point represents the multi-year mean of a paddy-proportion bin, and the marker color denotes the standard error of the mean (SEM).}
+    \label{fig:proportion_regression}
 \end{figure}
 
-该结果也提示，稻田气候效应的空间表达具有明显的景观依赖性。对于稻田比例较低的破碎化地区，网格平均温度更容易受到非稻田背景控制；在稻田比例较高的连片区域，稻田下垫面则可更充分地塑造局地热环境。因而，稻田面积变化对地表温度的影响不仅取决于绝对扩张规模，也取决于扩张后在景观中的占比。
+\subsection{稻田田块规模对稻田降温强度的影响}
 
-\subsection{稻田规模对降温强度的影响}
+稻田田块规模进一步揭示了空间连续性对稻田降温强度的调控作用。
+本研究中的稻田田块规模表示基于 MODIS 500 m 稻田像元定义的连片尺度指标（第 \ref{sec:pattern_definition} 节）。
+具体而言，稻田田块规模以连续稻田方形窗口的边长表示，田块规模 $n$ 对应 $n \times n$ 个连续 MODIS 稻田像元（图 \ref{fig:landscape_metrics_definition}b）。
+该指标反映稻田斑块在中分辨率遥感尺度上的空间集聚程度，可用于评估稻田降温效应是否随空间连续性增强而变化。
+结果显示，随着稻田田块规模增大，日间平均 $\Delta LST$ 持续增强（图 \ref{fig:paddy_size_dlst}）。
+从田块规模 $1$ 的小规模稻田，即约 $500~\mathrm{m} \times 500~\mathrm{m}$ 连片稻田，到田块规模 $=11$ 的大规模稻田，即约 $5.5~\mathrm{km} \times 5.5~\mathrm{km}$ 连片稻田，日间平均降温由约 $0.13~^{\circ}\mathrm{C}$ 增加至约 $0.43~^{\circ}\mathrm{C}$。
 
-稻田尺度对降温强度具有明显放大作用。图 \ref{fig:rice_scale_boxplot} 表明，随着斑块尺度增大，白天平均 $\Delta$LST 持续增强；从约 500 m $\times$ 500 m 的小尺度稻田到约 5.5 km $\times$ 5.5 km 的大尺度稻田，平均降温由约 0.13 $^{\circ}\mathrm{C}$ 增至约 0.43 $^{\circ}\mathrm{C}$。若考察生长季内的峰值差异，则小尺度稻田约为 0.18 $^{\circ}\mathrm{C}$，大尺度稻田可达约 0.69 $^{\circ}\mathrm{C}$。这表明空间连续性不仅增强了日常平均降温，也会显著放大旺盛生长期的最大效应。
+较大连片稻田内部距离稻田--非稻田边界更远，受到周围热力性质不同斑块的影响程度较低，更接近稳定湿润下垫面的热状态。
+在 MODIS 500 m 水稻制图和 1 km LST 观测尺度下，大规模连片稻田能够减少边缘混合和邻近地表干扰对稻田降温信号的削弱，使稻田水分--能量分配特征在遥感观测尺度上更充分地表达。
+同时，连续稻田区域内较强的蒸散发有利于维持相对稳定的冷湿环境，使更多可用能量转化为潜热通量，从而增强日间 LST 相对于非水稻农田的差异。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\linewidth]{figure/chapter7/rice_scale_boxplot.pdf}
-    \caption{不同稻田斑块规模等级的白天 $\Delta$LST 箱线图}
-    \label{fig:rice_scale_boxplot}
+    \includegraphics[width=0.7\linewidth]{figure/chapter4/paddy_size.png}
+    \bicaption[不同稻田田块规模的日间平均 $\Delta LST$]
+    {不同稻田田块规模的日间平均 $\Delta LST$。稻田田块规模以连片稻田的窗口边长表示，田块规模 $n$ 对应 $n \times n$ 个连续 MODIS 稻田像元。误差线表示 95\% 置信区间。}
+    [Daytime mean $\Delta LST$ across different paddy sizes]
+    {Daytime mean $\Delta LST$ across different paddy sizes. Paddy size is represented by the side length of a continuous square paddy window; paddy size $n$ corresponds to $n \times n$ contiguous MODIS paddy pixels. Error bars denote 95\% confidence intervals.}
+    \label{fig:paddy_size_dlst}
 \end{figure}
 
-这一尺度效应可从边缘过程和局地湿度场两个方面理解。连片稻田内部远离热力性质差异明显的边界，更接近稳定的湿润下垫面状态；大范围蒸散发还可维持更连续的近地层高湿环境，从而强化潜热通量占比。破碎化小斑块则更易受到周边较热地表的平流混合影响，其降温信号在空间上更容易被削弱。
+破碎化小稻田的降温信号相对较弱，并不意味着小规模稻田不存在蒸散发降温过程。
+在中分辨率遥感尺度上，小规模稻田更容易受到边界邻近、背景农田混合和 LST 像元支持尺度变化的影响，其真实地表温度差异在像元平均过程中可能被削弱。
+因此，稻田田块规模不仅描述稻田斑块的连片程度，也反映稻田水分--植被复合下垫面在空间上的连续表达能力，是解释不同稻区降温强度差异的重要景观指标。
 
-\subsection{稻田降温外溢效应}
+夜间不同田块规模下的 $\Delta LST$ 仍接近 0，说明田块规模对稻田降温的放大作用主要发生在日间。
+这一现象与日间蒸散发增强机制一致，也进一步表明稻田空间连续性通过增强水分--植被复合下垫面的日间能量分配差异，调节降温强度。
 
-基于 NPL 梯度的分析表明，稻田降温并未严格止于田块边界。图 \ref{fig:npl_spillover_gradient} 显示，靠近稻田的非稻田环带具有更低的 LST，因而对应的 $\Delta$LST 较小；随着距稻田边界的距离增加，$\Delta$LST 逐步升高并趋于稳定。该梯度说明，稻田蒸散发所塑造的冷湿环境能够向邻近景观扩展，形成可观测的外溢降温效应。基于这一发现，本研究在估算稻田自身降温幅度时采用 $NPL_{10-30}$ 作为默认对照，以避免近邻非稻田已被稻田冷却后造成效应低估。
+
+\subsection{非水稻农田梯度环带与稻田降温外溢效应}
+前述分析表明，稻田在局地景观中的覆盖程度和空间连续性共同调节其日间降温强度，
+这些结果主要揭示了稻田下垫面自身及其斑块尺度结构对 $\Delta LST$ 的影响。
+稻田水--植被复合下垫面所形成的低温环境还可能影响稻田边界外的邻近农田。
+如果稻田蒸散发和湿润地表条件对周边地表热环境具有影响，则距稻田边界不同距离处的非水稻农田 LST 应表现出一定的空间差异。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\linewidth]{figure/chapter7/npl_spillover_gradient.pdf}
-    \caption{距稻田边界不同距离处非稻田农田白天 LST 差异梯度图}
+    \includegraphics[width=0.85\linewidth]{figure/chapter4/paddy_NPL.png}
+    \bicaption[不同非水稻农田梯度环带的日间平均 $\Delta LST$ 变化]
+    {不同非水稻农田梯度环带的日间平均 $\Delta LST$ 变化。横轴表示非水稻农田梯度环带（NPL），纵轴为日间平均 $\Delta LST$，即对应 NPL 中非水稻农田与稻田之间的 LST 差值。曲线用于表征邻近非水稻农田地表温度差异随距稻田边界距离增加的变化。}
+    [Variations in daytime mean $\Delta LST$ across non-paddy cropland ladders]
+    {Variations in daytime mean $\Delta LST$ across non-paddy cropland ladders. The x-axis denotes non-paddy ladder (NPL), and the y-axis denotes daytime $\Delta LST$, defined as the LST difference between non-paddy croplands within each NPL and paddy fields. The curves characterize how the LST difference in neighboring non-paddy croplands changes with distance from paddy-field boundaries.}
     \label{fig:npl_spillover_gradient}
 \end{figure}
 
-外溢效应表明，稻田的气候服务具有景观尺度意义。其可能机制包括蒸散发释放水汽后对邻近农田蒸散发潜力的调节，以及稻田--非稻田之间水平温度梯度诱发的局地热量再分配。对于农业景观规划而言，这一发现意味着稻田配置方式可能影响周边农田乃至近郊地表热环境，而不仅仅改变稻田自身温度。
+因此，本节基于第 \ref{sec:pattern_definition} 节定义的非水稻农田梯度环带（non-paddy ladder, NPL），比较不同距离环带中非水稻农田的 LST 差异，以评估稻田低温影响在邻近农田中的空间表现。
+结果表明，靠近稻田边界的 NPL 中，非水稻农田通常具有较低的 LST；
+随着距稻田边界距离增加，非水稻农田 LST 逐渐升高并趋于稳定（图 \ref{fig:npl_spillover_gradient}）。
+这一距离变化表明，稻田降温影响可延伸至邻近非水稻农田，并在距稻田边界一定范围内形成可观测的温度差异。
+靠近稻田边界的非水稻农田可能受到稻田较低地表温度、局地水汽交换和热量再分配过程的影响，从而表现出低于远距离非水稻农田的 LST。
 
-\subsection{不同气候区的降温差异}
+不同田块规模下的 NPL 曲线均表现出由近及远逐渐升高并趋于稳定的特征，说明邻近非水稻农田的 LST 距离变化并不局限于某一类稻田斑块。
+相较于小规模稻田，大规模连片稻田对应的 NPL 曲线变化更明显，表明连续稻田斑块形成的低温环境更容易在邻近农田中表现出来。
+这一结果与前文田块规模分析相一致：连续稻田斑块不仅在稻田内部表现出更强的日间降温，也可能通过边界附近的热量和水分交换影响周边非水稻农田的地表热状态。
 
-气候分层结果显示，稻田降温效应受背景水分环境显著调制。干旱气候区白天 $\Delta$LST 最高，说明当非稻田农田蒸散发受限时，淹水稻田与周边旱作地表之间的能量分配差异最为突出；雪气候区居次，可能反映了短生长季中稻田生长与暖季辐射峰值的较强重合；暖温带和赤道气候区则相对较弱，因为对照农田在这些区域往往也具备较高植被覆盖度或较充足水分。已有灌溉研究同样表明，人为水分输入对地表热环境的调节强度取决于背景干湿状况和潜在蒸散发需求 \cite{McDermid2023Irrigation, Bright2017LCMC}。
+上述结果对 $\Delta LST$ 的对照样本构建具有重要方法意义。
+如果将紧邻稻田边界的非水稻农田直接作为默认对照样本，其 LST 可能已经受到稻田低温影响而偏低，从而低估稻田与背景非水稻农田之间的温度差异。
+因此，本文在默认 $\Delta LST$ 计算中采用 $NPL_{10-30}$ 作为非水稻农田对照，以降低近距离非水稻农田受稻田低温影响造成的对照偏差。
+该处理有助于使 $\Delta LST$ 更准确地表征稻田相对于局地非水稻农田背景的降温强度。
 
-因此，全球稻田降温效应不能被视为一个固定常数。其空间表达由水稻水分管理、冠层物候、景观组织和区域气候共同塑造，任何脱离背景环境的单一平均值都不足以完整描述其生态气候意义。
+稻田降温外溢效应说明，稻田的地表生物物理作用具有超出稻田像元本身的景观尺度意义。
+其形成可能与两个相互关联的过程有关。
+一方面，田面水蒸发、湿润土壤蒸发和水稻冠层蒸腾增强局地蒸散发，使稻田边界附近形成相对冷湿的地表环境；
+另一方面，稻田与周边非水稻农田之间的水平温度差异可能促进局地热量交换，使邻近非水稻农田的地表热状态受到调节。
+由于本研究基于卫星 LST 观测地表温度差异，外溢效应应理解为稻田邻近区域的地表热环境响应，而非对近地层气温、空气湿度或边界层动力过程的直接量化。
 
-\section{讨论}
+从农业景观和土地系统研究角度看，外溢效应拓展了稻田降温效应的空间解释范围。
+稻田空间配置不仅影响稻田自身的 LST，也可能影响邻近非水稻农田的地表热环境。
+在热风险较高、农田与建设用地交错分布或灌溉水分条件允许的区域，稻田空间布局对局地地表热环境的调节作用具有进一步评估价值。
+这一结果为后续将稻田空间配置、农田水分管理和农业适应性降温效应纳入综合土地系统研究提供了依据。
 
-\subsection{机制解释：地表能量平衡与昼夜不对称}
 
-本研究的结果共同指向一个清晰机制：稻田通过增强生长季蒸散发，改变了吸收能量在潜热与显热之间的分配比例，从而形成局地地表降温。白天显著正值的 $\Delta$LST、DOS 60--100 的季节峰值以及斑块尺度增大后的效应增强，均与冠层发育和蒸散发放大的过程预期相吻合。图 \ref{fig:energy_balance} 从能量平衡角度概括了这一机制。
+\section{稻田降温效应的生长季动态}
+
+前述分析表明，全球稻田在水稻生长季日间相对于周边非水稻农田具有稳定的地表降温效应，且稻田田块规模越大，日间 $\Delta LST$ 越强。
+这一田块规模效应可能与大田块内部更连续的湿润地表、更一致的冠层结构以及更弱的边界混合影响有关，说明稻田空间连续性能够调节生长季平均降温强度。
+然而，生长季平均值会平滑水稻不同生育阶段之间的差异，难以反映降温效应随物候进程的动态变化，也无法判断不同规模稻田之间的降温差异是贯穿整个水稻生长季，还是主要集中于某些关键生育阶段。
+由于稻田地表降温与田面水分状态、冠层发育和蒸散发过程密切相关，其强度并非在整个生长季内保持恒定，而可能随着水稻从移栽或返青、分蘖、抽穗到成熟收获的过程发生阶段性变化。
+因此，本节在真实水稻生长季约束下，进一步分析不同田块规模稻田的日间 $\Delta LST$ 动态变化，以揭示水稻生长过程与稻田空间连续性共同作用下的降温特征。
+
+% DOS 定义
+全球稻区在播栽日期、生长季长度和复种制度上差异显著。
+热带多熟稻区、亚热带双季稻区和温带单季稻区可能在完全不同的自然月份进入相似的生育阶段；同一自然月份在不同区域也可能对应移栽、分蘖、抽穗、成熟或收获后等不同阶段。
+若仅按照固定月份或自然年日序组织 LST 比较，不同地区的物候阶段容易被混合到同一时间窗口内，从而削弱 $\Delta LST$ 与真实水稻生长过程之间的对应关系。
+因此，跨区域分析稻田降温效应的生长季动态，需要将逐日温度差异从自然日期坐标转换到相对生育进程坐标。
+
+GlobalRice500 记录了逐像元、逐季水稻生长季起始日（Start of Season, SOS）和结束日（End of Season, EOS），为这一转换提供了真实生长季边界。
+本文将每一个水稻生长季事件中从 SOS 起算的天数定义为生长季日序（day of season, DOS），并将对应日期的逐日 $\Delta LST$ 转换到 DOS 坐标下。
+在该坐标体系中，DOS 表征的是水稻生长过程中的相对时间位置，而非固定历日。
+这种时间归一化处理能够减弱区域播栽期、生长季长度和复种制度差异对时间比较的影响，使不同稻区的降温增强、峰值出现和后期衰减过程能够在统一的物候参照系中进行比较。
+
+% 结果
+如图 \ref{fig:growing_season_dlst} 所示，不同田块规模稻田的日间 $\Delta LST$ 在水稻生长季内均呈现先增强后减弱的变化轨迹。
+生长季初期，$\Delta LST$ 相对较弱；
+随着 DOS 增加，日间 $\Delta LST$ 逐渐增强，并在 DOS 60--100 附近达到峰值；
+随后伴随水稻成熟和收获过程，$\Delta LST$ 逐步减弱。
+这一共同的倒 V 型变化表明，水稻生长过程决定了稻田降温效应的主要季节节律，最强降温信号集中出现在水稻冠层发育较充分、蒸散发较活跃的生长阶段。
+
+该倒 V 型季节变化过程与水稻生长发育和田间水分管理具有较好的物理一致性。
+生长季初期，稻田可能处于移栽、返青或早期分蘖阶段，冠层覆盖度仍较低，田面水和湿润土壤蒸发对能量分配具有重要作用，但作物蒸腾尚未达到高值。
+进入分蘖、拔节和抽穗等旺盛生长期后，水稻冠层迅速发育，叶面积指数和蒸腾能力提高，田面水、湿润土壤和冠层蒸腾共同增强潜热通量，使日间 $\Delta LST$ 达到较高水平。
+成熟后期，排水、冠层衰老、蒸腾减弱和收获过程使稻田降温效应逐渐下降。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{figure/chapter8/energy_balance_mechanism.pdf}
-    \caption{稻田与旱作农田地表能量平衡机制对比示意图。（a）白天：稻田通过蒸散发将更多净辐射转化为潜热通量（$LE$），显热通量（$H$）减少，地表温度降低；（b）夜间：太阳辐射消失，蒸散发显著减弱，稻田与周边农田的 LST 差异趋近于零。}
-    \label{fig:energy_balance}
+    \includegraphics[width=0.6\linewidth]{figure/chapter4/paddy_season.png}
+    \bicaption[不同田块规模稻田的生长季日间 $\Delta LST$ 动态变化]
+    {不同田块规模稻田的生长季日间 $\Delta LST$ 动态变化。横轴为生长季日序（day of season, DOS），表示从水稻生长季起始日开始计算的天数；纵轴为日间 $\Delta LST$，即水稻生长季内匹配非水稻农田与稻田之间的 LST 差值。不同曲线表示不同稻田田块规模，曲线采用五日滑动平均进行平滑。}
+    [Seasonal dynamics of daytime $\Delta LST$ for paddy fields of different sizes]
+    {Seasonal dynamics of daytime $\Delta LST$ for paddy fields of different sizes. The x-axis denotes day of season (day of season, DOS), counted from the start of the rice growing season, and the y-axis denotes daytime $\Delta LST$, defined as the LST difference between matched non-paddy croplands and paddy fields during the rice growing season. Different curves represent different paddy field sizes, and the curves are smoothed using a five-day moving average.}
+    \label{fig:growing_season_dlst}
 \end{figure}
 
-昼夜不对称性进一步强化了这一解释。若仅存在静态水体热惯性，夜间升温信号应更加突出；本研究观测到的夜间 $\Delta$LST 接近零，说明稻田降温主要发生在太阳辐射驱动的白天能量交换阶段。与森林、湿地和灌溉旱地相比，稻田的独特性在于其同时具备浅水层蒸发、作物冠层蒸腾和强人为物候管理三重特征，因而其降温效应呈现出明显的季节窗口和田块尺度依赖性 \cite{Alkama2016, Li2015NatCommun, Liu2022AgForMet, Xue2021RemoteSensing}。
+不同田块规模的 DOS 曲线进一步显示，田块规模主要调节稻田降温效应的幅度，不影响季节变化形态。
+不同规模稻田的峰值阶段大体一致，均集中在 DOS 60--100 附近，但较大田块规模的 $\Delta LST$ 曲线整体高于较小田块规模。
+小规模稻田的最大 $\Delta LST$ 约为 $0.18~^{\circ}\mathrm{C}$，大规模稻田可达约 $0.69~^{\circ}\mathrm{C}$。
+这表明，大田块在整个水稻生长季内均维持更强的日间降温效应，尤其在冠层发育和蒸散发最活跃的阶段，其降温峰值更加突出。
 
-\subsection{稻田气候效应的综合认识与边界}
+该结果使田块规模分析从平均状态推进到过程层面。
+在生长季初期，不同规模稻田的 $\Delta LST$ 差异相对较小，说明早期冠层尚未充分发育时，田块规模对降温幅度的放大作用有限。
+进入水稻旺盛生长期后，大田块内部连续湿润地表和冠层蒸腾共同增强，边界混合影响相对较弱，不同规模之间的 $\Delta LST$ 差异随之扩大。
+成熟后期，随排水、冠层衰老和蒸散发减弱，各规模稻田的降温效应均有所下降。
+由此可见，水稻生长过程决定 $\Delta LST$ 的季节节律，使降温效应在旺盛生长期达到峰值；田块规模调节 $\Delta LST$ 的幅度，使连续稻田斑块在同一生育阶段表现出更强的降温信号。
 
-长期以来，稻田的气候影响更多从甲烷排放角度被认识。持续淹水可形成厌氧环境并促进产甲烷过程，使稻作农业成为重要温室气体排放源 \cite{Zhang2020NatCommun, Qian2023RiceGHG}。本研究所揭示的地表降温效应补充了这一认知框架，表明稻田还通过地表能量平衡调节产生局地生物物理反馈。对于完整理解稻作系统的气候作用而言，温室气体效应与生物物理效应均不可缺位。
+上述结果说明，稻田降温效应具有明确的生长季阶段性，并受到稻田空间连续性的幅度调节。
+仅使用全年平均或固定月份平均 LST 难以准确捕捉降温峰值，也容易混入非水稻生长期信息。
+DOS 轨迹将稻田降温效应的时间基准从固定历日转换为真实生育过程，使双季稻、多季稻、错季稻和跨纬度稻区能够在同一框架内比较。
+GlobalRice500 的逐像元 SOS--EOS 信息为过程分析提供了关键时间约束，使 $\Delta LST$ 的变化能够更准确地对应水稻生长、田间水分管理和蒸散发过程。
 
-这两类效应的尺度、指标和作用机制并不相同。甲烷排放通过改变大气成分影响辐射强迫，具有全球累积和多年尺度特征；本研究量化的 $\Delta$LST 则描述晴空条件下、稻田相对于邻近非稻田农田的局地地表温度响应，具有显著的空间局地性、季节性和下垫面依赖性。因此，0.21--0.27 $^{\circ}\mathrm{C}$ 的 LST 降温不能直接与温室气体造成的全球平均气温变化进行代数抵消。
+综上，稻田降温效应既表现为空间上广泛存在的日间低温信号，也表现为随水稻生长季推进而变化的阶段性过程。
+生长季初期的弱降温、冠层旺盛发育阶段的峰值增强以及成熟阶段的逐步衰减，共同揭示了稻田水分--植被复合下垫面对地表能量交换的动态调节作用。
+在明确稻田斑块内部降温效应的生长季动态后，下一节进一步分析稻田低温影响是否能够延伸至稻田边界外的邻近非水稻农田。
 
-还需区分 LST 与近地表气温。LST 是热红外遥感反演得到的地表“皮肤温度”，对土壤水分、冠层结构和辐射状况高度敏感；近地表气温则受湍流混合、边界层结构和大气输送共同控制。稻田在 LST 上表现出的降温并不等同于区域或全球气温同步下降。本研究更稳妥的结论是：在真实水稻生长季内，全球稻田相对于周边非稻田农田普遍具有局地地表降温效应，该效应主要由白天蒸散发增强驱动，并受到景观结构和气候背景调制。未来若要进一步评估稻田的综合气候净效应，仍需将辐射强迫、近地气温、水资源消耗和粮食生产共同纳入统一的物理量纲与权衡框架。
+
+\section{讨论}
+本章基于真实水稻生长季约束和匹配非水稻农田对照框架，从全球空间格局、昼夜差异、气候背景、景观结构、生长季过程和边界外溢等方面揭示了稻田地表降温效应。
+总体上，全球稻田在水稻生长季日间相对于周边非水稻农田表现出稳定的低 LST 特征，而夜间温度差异显著减弱；
+稻田比例、田块规模和边界邻近关系共同调节降温强度；
+水稻生长过程进一步决定降温效应的季节节律，使其在冠层发育和蒸散发旺盛阶段达到峰值。
+上述结果表明，稻田降温并非单一像元尺度的静态温度差异，而是水分管理、作物生长和景观结构共同作用下形成的地表生物物理过程。
+以下从地表能量平衡机制、景观尺度调控、综合气候效应边界和不确定性四个方面进一步讨论。
+
+\subsection{稻田降温的地表能量平衡机制}
+% 能量平衡导致降温
+本研究观测到的日间显著降温和夜间弱差异，反映了稻田与非水稻农田在日变化尺度上的地表能量收支差异。
+地表吸收的净辐射通常在显热通量、潜热通量、土壤热通量和热储存之间分配，土地覆盖和土地管理变化可通过调节反照率、蒸散发、地表粗糙度和热储存等过程影响局地地表温度 \cite{Bonan2008Science,Davin2010Deforestation,Bright2017LCMC}。
+相较于一般非水稻农田，稻田在水稻生长季内具有田面水、饱和或近饱和土壤以及水稻冠层共同构成的水--植被复合下垫面。
+土壤水分和水分供应条件是调节地表能量分配和土壤水分--温度反馈的重要因素 \cite{Seneviratne2010SoilMoisture}。
+在相近辐射背景下，稻田较高的水分供应和较大的热容量改变了可用能量的分配方式：
+一方面，田面水和湿润土壤具有较强的热缓冲能力，使稻田日间升温速率低于相对干燥的农田地表；
+另一方面，田面水蒸发、湿润土壤蒸发和水稻冠层蒸腾将更多可用能量转化为潜热，从而减少用于升高地表温度的显热通量。
+灌溉和人为水分输入通常可通过增加土壤湿度和蒸散发降低日间地表温度，尤其在水分受限区域更为明显 \cite{McDermid2023Irrigation,Thiery2020Irrigation}。
+因此，稻田在太阳辐射输入强、蒸散发活跃的日间表现出低于周边非水稻农田的 LST。
+
+夜间太阳短波辐射输入消失，地表主要通过长波辐射、热传导和湍流交换继续释放能量。
+由于夜间蒸散发显著减弱，稻田相对于非水稻农田的潜热通量优势随之降低。
+同时，稻田日间储存的热量使其夜间冷却速率较慢，而非水稻农田虽然日间温度较高，但夜间降温也较快。
+已有土地覆盖变化研究表明，地表温度响应往往具有明显昼夜不对称性，日间响应更多受太阳辐射吸收和潜热通量差异影响，而夜间响应则与热储存释放、湍流交换和稳定边界层过程密切相关 \cite{Schultz2017Diurnal}。
+因此，夜间潜热通量差异减弱与稻田热储存释放共同导致稻田与非水稻农田的夜间 LST 逐渐趋近。
+本研究中夜间 $\Delta LST$ 接近 0，进一步说明稻田降温效应主要发生在太阳辐射驱动、蒸散发活跃和能量分配差异最明显的日间阶段。
+
+% 生长季
+水稻生长季内 $\Delta LST$ 的倒 V 型变化进一步支持这一机制解释。
+生长季初期，稻田水层和湿润土壤已开始影响地表热状态，但水稻冠层覆盖度和蒸腾能力仍处于较低水平，降温效应相对有限。
+进入分蘖、拔节和抽穗等旺盛生长期后，水稻冠层快速发育，叶面积和蒸腾能力增强，田面水分供应与冠层蒸腾共同放大潜热通量，使日间 $\Delta LST$ 在 DOS 60--100 附近达到峰值。
+成熟后期伴随田间排水、冠层衰老、蒸腾减弱和收获过程，稻田降温效应逐步下降。
+由此可见，稻田降温效应是水分管理、热容量差异和冠层蒸散过程共同作用的结果，并具有明确的昼夜差异和生长季阶段性。
+
+% 气候区
+不同气候区的 $\Delta LST$ 差异亦可在这一能量平衡框架下理解。
+干旱气候区日间降温强度最高，这可能是因为背景非水稻农田蒸散发更容易受到水分限制，而稻田水分供应和冠层蒸腾所形成的潜热优势更容易转化为可观测的 LST 差异 \cite{Seneviratne2010SoilMoisture,McDermid2023Irrigation}。
+相反，在赤道和暖温带等水分背景较湿润、非水稻农田同样具有较高蒸散能力的区域，稻田与非水稻农田之间的热状态差异相对收敛。
+不同气候区的 $\Delta LST$ 差异说明，水分--能量调节机制会受到背景水分条件、潜在蒸散需求和农业管理方式的共同调制。
+
+\subsection{景观结构对稻田降温效应的尺度调控}
+稻田地表降温效应不仅取决于单个像元是否种植水稻，也取决于稻田在局地景观中的组成比例、空间连续性和边界邻近关系。
+土地覆盖和土地管理的温度效应本身具有明显的尺度依赖性；在局地尺度上，非辐射过程如蒸散发和显热交换常常是解释温度差异的重要机制，而在更大尺度上，大气反馈和空间聚集格局也会影响地表温度响应 \cite{Bright2017LCMC,Chen2020NatCommun}。
+本研究构建的稻田比例、稻田田块规模和非水稻农田梯度环带分别对应三个互补的景观维度：
+稻田比例表征水--植被复合下垫面在局地景观中的面积占比；
+田块规模表征稻田斑块的空间连续性；
+非水稻农田梯度环带则用于刻画稻田低温影响是否能够越过边界并在邻近农田中形成距离衰减。
+
+稻田比例与日间 $\Delta LST$ 的正相关关系表明，稻田降温效应具有明显的景观组成依赖性。
+当 10 km 网格内稻田比例较高时，田面水、湿润土壤和水稻冠层构成的高蒸散下垫面在局地景观中占据更大份额，其潜热通量优势更容易在网格尺度上表现为较低的平均 LST。
+当稻田比例较低或空间分布破碎时，稻田低温信号更容易被周边非水稻农田、裸地、建设用地或其他热力性质不同的地表背景稀释。
+因此，稻田面积变化对地表温度的影响不仅取决于面积增减本身，也取决于这种变化是否改变了局地景观中稻田下垫面的相对主导程度。
+
+田块规模的分析结果进一步表明，空间连续性能够放大稻田降温效应。
+较大连片稻田内部距离稻田--非稻田边界更远，受边缘混合、邻近斑块干扰和 LST 像元混合的影响较弱，更接近连续湿润下垫面的热状态。
+以往区域研究也发现，稻田扩张或稻田空间变化可通过生物物理过程影响地表温度，但其效应强度会受到稻田空间集聚程度和背景地表条件调节 \cite{Liu2022AgForMet}。
+在本研究中，大规模连片稻田能够在景观尺度上更稳定地维持田面水、湿润土壤和水稻冠层共同作用形成的高蒸散环境，使稻田水分--能量分配特征在遥感 LST 中得到更充分表达。
+因此，大规模连片稻田的日间 $\Delta LST$ 明显高于小规模或破碎化稻田。
+该结果说明，田块规模不仅是稻田景观形态指标，也是决定稻田地表生物物理信号能否被遥感稳定观测的重要尺度条件。
+
+非水稻农田梯度环带结果说明，稻田降温影响并不完全局限于稻田斑块内部。
+靠近稻田边界的非水稻农田通常具有较低 LST，随着距稻田边界距离增加，非水稻农田 LST 逐渐升高并趋于稳定。
+这一距离衰减特征表明，稻田形成的低温和高湿环境可能通过邻近地表热量交换、水汽交换和局地湍流过程影响周边农田。
+
+上述三个景观指标主要解释了稻田降温效应的空间差异，而生长季动态结果进一步表明，这种景观结构调控并不是独立于水稻生长过程存在的。
+本研究观测到的水稻生长季内 $\Delta LST$ 倒 V 型变化表明，
+水稻生长过程主要决定 $\Delta LST$ 的季节节律，使降温效应在冠层发育和蒸散发旺盛阶段达到峰值；
+田块规模则主要调节 $\Delta LST$ 的幅度，使连续稻田斑块在同一生育阶段表现出更强的降温信号。
+换言之，水稻物候主要决定降温效应的时间窗口和峰值阶段，景观结构主要决定降温信号的表达幅度。
+这也是本章将真实水稻生长季信息与景观结构指标结合分析的核心意义。
+
+上述结果具有一定农业景观管理启示。
+在水资源条件允许、热胁迫风险较高且稻田本身具有生产适宜性的区域，维持一定连续性的稻田景观可能有助于缓解生长季局地地表高温，并为作物和农业劳动者提供微气候适应收益。
+然而，这一潜在适应效益不能被简单理解为扩大稻田面积的单一理由。
+稻田景观管理仍需综合考虑粮食生产、水资源消耗、甲烷排放、灌溉条件、区域农业制度和生态环境约束 \cite{Qian2023RiceGHG,McDermid2023Irrigation}。
+
+\subsection{稻田地表降温的生物物理意义与气候效应边界}
+% 补足认知
+长期以来，稻田的气候影响更多从甲烷排放角度被认识。
+持续或阶段性淹水可形成厌氧土壤环境并促进产甲烷过程，使稻作农业成为重要温室气体排放源 \cite{Zhang2020NatCommun,Qian2023RiceGHG}。
+本研究揭示的地表降温效应补充了这一认知框架，表明稻田亦可通过蒸散发增强、显热通量降低和地表能量分配调整产生局地生物物理反馈。
+土地生态系统的气候作用通常同时包含生物地球化学效应和生物物理效应，后者可通过反照率、蒸散发和地表粗糙度等过程改变局地或区域气候 \cite{Bonan2008Science,Alkama2016,Li2015NatCommun}。
+因此，完整理解稻作系统的气候作用，需要同时考虑生物地球化学效应和地表生物物理效应。
+
+生物地球化学效应和生物物理效应在空间尺度、时间尺度、物理指标和气候含义上并不相同。
+本研究量化的 $\Delta LST$ 描述的是晴空或近晴空条件下，稻田相对于邻近非水稻农田的局地地表温度差异。
+它反映的是水稻生长季内地表能量通量分配变化，主要发生在日间，并具有明显的空间邻近性和物候阶段性。
+甲烷排放造成的增温效应则通过改变大气成分和辐射强迫影响全球气候系统，具有累积性、长期性和全球混合特征 \cite{Qian2023RiceGHG}。
+因此，$\Delta LST$ 不能与甲烷排放造成的全球平均气温贡献直接相减，也不能被简单表述为对温室气体增温的抵消。
+
+此外，LST 与近地表气温（near-surface air temperature, SAT）具有不同的物理含义。
+LST 是热红外遥感反演得到的地表“皮肤温度”，对土壤水分、冠层结构、地表发射率、辐射状况和观测时间高度敏感 \cite{Li2013RSELST,Li2023LSTReview}。
+SAT 则受湍流混合、边界层高度、风场、大气稳定度和区域平流等大气过程共同控制。
+已有研究表明，地表温度和近地表气温对土地覆盖变化的响应幅度和空间格局可能存在差异，因此在分析地表生物物理温度效应时，需要明确温度变量的物理属性和适用范围 \cite{Winckler2019ESD}。
+稻田较低的日间 LST 可能通过改变地表热通量进一步影响近地层热环境，但这种影响的大小、方向和空间传播路径不能仅由 LST 差异直接推断。
+未来若要评估稻田对区域热环境和人类热暴露的影响，仍需进一步结合通量观测、近地气象观测和区域气候模拟。
+
+因此，稻田地表降温效应应被理解为一种局地尺度的地表生物物理气候效应及潜在适应协同效益。
+这一效应表明，稻田生态系统的气候作用除温室气体排放外，还包括由水分管理和作物冠层调节所引起的地表能量平衡反馈。
+然而，在政策和管理层面，不能将本研究观测到的 LST 降温直接等同于全球气候减缓效应，也不宜据此推导出扩大稻田面积或以地表降温抵消甲烷排放的简单结论。
+后续研究需要在统一框架下综合评估稻田粮食生产、水资源消耗、温室气体排放、蒸散发、LST 变化和 SAT 响应，并进一步区分局地适应效益与全球减缓效应。
+
+\subsection{不确定性与解释边界}
+
+本研究通过真实水稻生长季约束、非水稻农田对照样本筛选、时空分块自助抽样和分区敏感性评估提高了 $\Delta LST$ 估计的稳健性；
+然而，作为全球尺度观测型遥感分析，本研究仍存在若干不确定性和解释边界。
+
+首先，LST 产品主要反映晴空或近晴空条件下的地表热状态。
+热红外 LST 反演受云、薄云、气溶胶、地表发射率、大气校正误差和观测几何等因素影响 \cite{Li2013RSELST,Li2023LSTReview}。
+本章使用的 1 km 日尺度 LST 数据集通过多源数据融合和重建提高了时空连续性，但其精度仍受原始热红外观测、重建方法和区域地表条件影响 \cite{Zhang2022ESSDLST}。
+由于厚云覆盖条件下难以获取有效热红外观测，本研究结果并不代表全天候条件下稻田与非水稻农田的温度差异。
+在长期多云、降雨频繁或季风影响显著的稻区，有效观测数量和观测时段可能不同于少云或干旱区域，从而影响不同区域之间的可比性。
+
+其次，匹配对照样本虽控制了农田属性、空间距离、高程差和样本数量，但仍无法完全排除所有背景差异。
+非水稻农田可能在作物类型、土壤质地、土壤水分、灌溉条件、播种日期、冠层结构、反照率和管理制度等方面与稻田存在差异。
+这些因素均可能通过蒸散发、反照率和显热交换影响 LST \cite{Bright2017LCMC,Seneviratne2010SoilMoisture}，并使 $\Delta LST$ 同时包含稻田水分--植被系统效应和部分残余管理差异。
+因此，本研究的匹配对照框架能够显著降低混杂因素影响，但不能等同于严格控制实验或因果识别设计。
+
+此外，水稻识别和生长季提取的不确定性会传递至 $\Delta LST$ 估计。
+弱淹水信号、旱直播稻、间歇灌溉、长期云雨覆盖、湿地--农田混淆、小田块混合像元和复种制度复杂等因素，均可能影响水稻边界、SOS、EOS 和 DOS 的识别精度。
+尽管第 3 章已从参考样本精度、面积一致性和多区域对比等方面验证了 GlobalRice500 的可靠性，局部区域的分类误差仍可能影响 $\Delta LST$ 的局地估计。
+这种影响在地形破碎、小田块密集和稻田与其他湿润地物交错分布的区域尤其需要谨慎解释。
+
+另外，本研究主要基于 LST 差异推断稻田地表能量平衡机制，尚未直接观测显热通量、潜热通量、土壤热通量和边界层过程。
+因此，关于蒸散发增强、显热降低和热容量调节的解释具有明确的物理一致性，但仍属于基于遥感温度格局和水稻生长过程的机制推断。
+未来研究可进一步结合涡度相关通量塔、高时间分辨率热红外观测、田间水分管理数据、陆面过程模型和区域气候模拟，分解田面水蒸发、土壤蒸发、冠层蒸腾和热储存对稻田降温的相对贡献，并量化 LST 信号向近地气温、边界层结构和人类热暴露的传播路径。
+
+综上，本研究结果更适合解释全球和区域尺度上稻田相对于周边非水稻农田的平均地表温度差异及其空间、时间和景观调控规律。
+在小田块、地形破碎、长期多云、灌溉制度复杂或稻田与湿地、水体、城市边缘交错分布的区域，$\Delta LST$ 的局地解释需要更加谨慎。
+尽管如此，本研究基于统一数据、统一指标和统一对照框架揭示了全球稻田日间地表降温的稳定性，为进一步理解稻田生态系统的地表生物物理气候效应提供了重要证据。
+
+
+\section{本章小结}
+
+本章基于 GlobalRice500 提供的逐像元水稻生长季信息和 2003--2020 年全球 1 km 日尺度 LST 数据，构建稻田与周边非水稻农田的匹配对照框架，系统评估了全球稻田地表降温效应。
+主要结论如下。
+
+本章基于 GlobalRice500 提供的逐像元水稻分布和真实水稻生长季信息，结合 2003--2020 年全球 1 km 日尺度 LST 数据，构建稻田与周边非水稻农田的匹配对照框架，系统评估了全球稻田地表降温效应及其景观调控和生长季动态。
+主要结论如下。
+
+第一，真实水稻生长季信息为全球稻田地表降温效应评估提供了关键时间约束。
+本章将 $\Delta LST$ 定义为水稻生长季内匹配非水稻农田与稻田之间的 LST 差值，并通过农田属性、空间距离、高程差和对照样本数量等条件筛选非水稻农田样本。
+这一框架避免了全年平均或固定月份窗口造成的物候错配，使不同纬度、不同播栽期和不同复种制度下的稻田降温效应能够在统一生长季基准下比较。
+
+第二，全球稻田在水稻生长季日间具有广泛而稳定的地表降温效应，并表现出显著昼夜不对称性。
+2003--2020 年，全球日间平均 $\Delta LST$ 年均值介于 0.21--0.27 $^{\circ}\mathrm{C}$ 之间，各年份 95\% 置信区间均高于 0，表明稻田相对于周边非水稻农田的日间低温信号在研究期内稳定存在。
+相比之下，夜间 $\Delta LST$ 量级远小于日间，多数稻区接近 0，说明稻田降温效应主要发生在太阳辐射驱动、蒸散发活跃和能量分配差异显著的日间阶段。
+分气候区结果进一步表明，日间降温信号在主要气候背景下均保持稳定，但降温强度受背景水分条件调制，干旱气候区最强，暖温带和赤道气候区相对较弱。
+
+第三，景观结构显著调控稻田地表降温强度。
+稻田比例越高，日间平均 $\Delta LST$ 越大，稻田比例每增加 1\%，$\Delta LST$ 约增加 0.0014 $^{\circ}\mathrm{C}$，说明稻田水--植被复合下垫面在局地景观中的面积占比会影响降温信号的表达强度。
+稻田田块规模越大，降温效应越强；大规模连片稻田在生长季旺盛阶段的峰值 $\Delta LST$ 可达约 0.69 $^{\circ}\mathrm{C}$，显著高于小规模稻田。
+非水稻农田梯度环带分析进一步表明，稻田低温影响可向周边非水稻农田外溢，并随距稻田边界距离增加而逐渐减弱。
+上述结果共同说明，稻田降温效应具有景观组成、空间连续性和边界邻近关系依赖特征。
+
+第四，稻田降温效应具有明确的生长季阶段性，且水稻生长过程与景观结构共同决定其时空表达。
+日间 $\Delta LST$ 随 DOS 推进呈先增强后减弱的倒 V 型变化，并在 DOS 60--100 附近达到峰值。
+生长季初期，冠层尚未充分发育，降温效应相对较弱；
+进入分蘖、拔节和抽穗等旺盛生长期后，冠层蒸腾和田面水分供应共同增强潜热通量，使降温效应达到高值；
+成熟和收获阶段，随排水、冠层衰老和蒸腾减弱，降温效应逐步下降。
+结合不同田块规模的生长季曲线，水稻生长过程主要决定降温效应的季节节律，田块规模主要调节降温效应的幅度。
+
+第五，稻田地表降温效应应被理解为稻田生态系统地表生物物理气候效应的重要组成部分。
+该效应与甲烷排放导致的温室气体增温效应属于不同物理过程、不同时间尺度和不同气候指标，不能直接以温度数值相互抵消。
+本章结果表明，除温室气体排放外，稻田还通过水分管理、作物冠层和地表能量分配改变局地地表热环境。
+未来需要在统一框架下综合评估稻田粮食生产、水资源消耗、温室气体排放、蒸散发、LST 变化和近地气温响应，以更全面认识稻田生态系统在全球变化背景下的综合环境效应。
+
+总体而言，本章将 GlobalRice500 的逐像元水稻生长季信息与全球日尺度 LST 数据相结合，揭示了全球稻田在水稻生长季内广泛存在的日间地表降温效应，并进一步阐明了其昼夜不对称性、气候背景差异、景观结构调控、生长季阶段性和边界外溢特征。
+这一结果为理解稻田生态系统的气候作用提供了除温室气体排放之外的地表能量平衡视角，也为后续综合评估稻田生产、资源消耗、温室气体排放和地表气候效应之间的权衡关系奠定了基础。
