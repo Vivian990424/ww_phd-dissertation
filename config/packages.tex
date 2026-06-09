@@ -15,8 +15,35 @@
     style=gb7714-2015,
     gbcitelocal=chinese,   % Uncomment if you want \citeauthor{} in "et al." format. GitHub PR (#324)
     % gbpub=false,         % Uncomment if you do NOT want '[S.l. : s.n.]' in reference entries, GitHub Issue (#47)
-    % gbnamefmt=lowercase, % Uncomment if you do NOT want uppercase author names in reference entries, GitHub Issue (#23)
+    gbnamefmt=lowercase,   % Use title-case author names instead of all-uppercase names in reference entries.
 ]{biblatex}
+% TeX Live 2026's gb7714-2015 style treats DOI-bearing entries as online
+% carriers when printing the type flag. For journal articles, keep ordinary
+% DOI-only published papers as [J]; use [J/OL] only for URL/eprint entries or
+% entries explicitly marked with medium = {OL}.
+\DeclareFieldFormat{gbtypeflag}{%
+\iftoggle{bbx:gbmedium}%
+{\ifentrytype{article}%
+    {\iftoggle{bbx:url}%
+        {\ifboolexpr{ test {\iffieldundef{url}} and test {\iffieldundef{eprint}} }%
+            {\printdelim{titletypedelim}\printtext{\gbleftbracket}\nobreak#1\nobreak\printtext{\iffieldundef{medium}{}{{\SlashFont/}\thefield{medium}}\gbrightbracket}}%
+            {\printdelim{titletypedelim}\printtext{\gbleftbracket}\nobreak#1\nobreak\printtext{{\SlashFont/}OL\gbrightbracket}}%
+        }%
+        {\printdelim{titletypedelim}\printtext{\gbleftbracket}\nobreak#1\nobreak\printtext{\iffieldundef{medium}{}{{\SlashFont/}\thefield{medium}}\gbrightbracket}}%
+    }%
+    {\iftoggle{bbx:url}%
+        {\ifboolexpr{ test {\iffieldundef{url}} and test {\iffieldundef{doi}} and test {\iffieldundef{eprint}} }%
+            {\printdelim{titletypedelim}\printtext{\gbleftbracket}\nobreak#1\nobreak\printtext{\iffieldundef{medium}{}{{\SlashFont/}\thefield{medium}}\gbrightbracket}}%
+            {\printdelim{titletypedelim}\printtext{\gbleftbracket}\nobreak#1\nobreak\printtext{{\SlashFont/}OL\gbrightbracket}}%
+        }%
+        {\ifentrytype{online}%
+            {\printdelim{titletypedelim}\printtext{\gbleftbracket}\nobreak#1\nobreak\printtext{{\SlashFont/}OL\gbrightbracket}}%
+            {\printdelim{titletypedelim}\printtext{\gbleftbracket}\nobreak#1\nobreak\printtext{\iffieldundef{medium}{}{{\SlashFont/}\thefield{medium}}\gbrightbracket}}%
+        }%
+    }%
+}%
+{\printdelim{titletypedelim}\printtext{\gbleftbracket}\nobreak#1\nobreak\printtext{\gbrightbracket}}%
+}
 \usepackage{siunitx}
 \usepackage{caption}
 \usepackage{color}

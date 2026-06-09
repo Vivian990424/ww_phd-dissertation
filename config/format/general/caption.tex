@@ -19,3 +19,25 @@
     \def\figurename{Figure}%
 }
 \captionsetup[bi-second]{bi-second}
+
+% Put bilingual figure/table entries in the same list item:
+% Chinese title on the first line and English title on the second line.
+\makeatletter
+\renewcommand\bicaption@addcontentsline[3]{%
+    \begingroup
+        \let\caption@addsubcontentslines\@gobble
+        \caption@setoptions{bi}%
+        \caption@setoptions{bi-first}%
+        \caption@ifcontentsline{#3}{%
+            \edef\bicaption@tempa{\@nameuse{ext@#2}}%
+            \def\bicaption@tempb{lof}%
+            \ifx\bicaption@tempa\bicaption@tempb
+                \bicaption@addcontentsline@ORI{#2}{#3\protect\\\protect\hspace*{-\cftfignumwidth}Figure~\@nameuse{the#2}\enspace #1}%
+            \else
+                \bicaption@addcontentsline@ORI{#2}{#3\protect\\\protect\hspace*{-\cfttabnumwidth}Table~\@nameuse{the#2}\enspace #1}%
+            \fi
+        }%
+    \endgroup
+    \caption@addsubcontentslines{#2}%
+}
+\makeatother
