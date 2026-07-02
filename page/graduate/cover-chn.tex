@@ -52,6 +52,7 @@
 
 \begin{center}
     \bfseries \zihao{-2}
+    \renewcommand{\arraystretch}{0.95}   % 整体把表格行距压缩到 0.9 倍
     \begin{tabularx}{.99\textwidth}{>{\fangsong}l X<{\centering}}
         % If titles are too long for one row, please manually hardcode them in
         % multiple lines, as the english title example here.
@@ -67,6 +68,17 @@
             ~            & \uline{\hfill \fangsong \TitleLineTwo{} \hfill} \\
         }
 
+        % \ifthenelse{\equal{\TitleEngLines}{1}}
+        % {
+        %     % TitleEngLines == 1
+        %     英文论文题目：& \zihao{3} \uline{\hfill \TitleEng{} \hfill} \\
+        %     ~ & \uline{\hfill} \\
+        % }
+        % {
+        %     % TitleEngLines == 2
+        %     英文论文题目：& \zihao{-3} \uline{\hfill \TitleEngLineOne{} \hfill} \\
+        %     ~            & \zihao{-3} \uline{\hfill \TitleEngLineTwo{} \hfill} \\
+        % }
         \ifthenelse{\equal{\TitleEngLines}{1}}
         {
             % TitleEngLines == 1
@@ -74,9 +86,18 @@
             ~ & \uline{\hfill} \\
         }
         {
-            % TitleEngLines == 2
-            英文论文题目：& \zihao{3} \uline{\hfill \TitleEngLineOne{} \hfill} \\
-            ~            & \zihao{3} \uline{\hfill \TitleEngLineTwo{} \hfill} \\
+            \ifthenelse{\equal{\TitleEngLines}{2}}
+            {
+                % TitleEngLines == 2
+                英文论文题目：& \zihao{3} \uline{\hfill \TitleEngLineOne{} \hfill} \\
+                ~            & \zihao{3} \uline{\hfill \TitleEngLineTwo{} \hfill} \\
+            }
+            {
+                % TitleEngLines == 3
+                英文论文题目：& \zihao{-3} \uline{\hfill \TitleEngLineOne{} \hfill} \\
+                ~            & \zihao{-3} \uline{\hfill \TitleEngLineTwo{} \hfill} \\
+                ~            & \zihao{-3} \uline{\hfill \TitleEngLineThree{} \hfill} \\
+            }
         }
     \end{tabularx}
 \end{center}

@@ -4,7 +4,19 @@
 \begin{center}
     % Chinese zihao{3} == English 16pt
     \bfseries \zihao{3}
+    \renewcommand{\arraystretch}{0.90}   % 整体把表格行距压缩到 0.9 倍
     \begin{tabularx}{.8\textwidth}{X<{\centering}}
+        % \ifthenelse{\equal{\TitleEngLines}{1}}
+        % {
+        %     % TitleEngLines == 1
+        %     \uline{\hfill \TitleEng{} \hfill} \\
+        %     \uline{\hfill} \\
+        % }
+        % {
+        %     % TitleEngLines == 2
+        %     \uline{\hfill \TitleEngLineOne{} \hfill} \\
+        %     \uline{\hfill \TitleEngLineTwo{} \hfill} \\
+        % }
         \ifthenelse{\equal{\TitleEngLines}{1}}
         {
             % TitleEngLines == 1
@@ -12,9 +24,18 @@
             \uline{\hfill} \\
         }
         {
-            % TitleEngLines == 2
-            \uline{\hfill \TitleEngLineOne{} \hfill} \\
-            \uline{\hfill \TitleEngLineTwo{} \hfill} \\
+            \ifthenelse{\equal{\TitleEngLines}{2}}
+            {
+                % TitleEngLines == 2
+                \uline{\hfill \TitleEngLineOne{} \hfill} \\
+                \uline{\hfill \TitleEngLineTwo{} \hfill} \\
+            }
+            {
+                % TitleEngLines == 3
+                \uline{\hfill \TitleEngLineOne{} \hfill} \\
+                \uline{\hfill \TitleEngLineTwo{} \hfill} \\
+                \uline{\hfill \TitleEngLineThree{} \hfill} \\
+            }
         }
     \end{tabularx}
 \end{center}
@@ -25,7 +46,7 @@
     \includegraphics[width=0.15\paperwidth]{logo/zju.pdf}
 \end{center}
 
-\vskip 14pt
+\vskip 6pt
 
 \begin{center}
     \bfseries \zihao{-3}
@@ -35,10 +56,11 @@
     \end{tabularx}
 \end{center}
 
-\vskip 10pt
+\vskip 5pt
 
 \begin{center}
     \zihao{4}
+    \renewcommand{\arraystretch}{0.90}   % 整体把表格行距压缩到 0.9 倍
     \begin{tabularx}{.8\textwidth}{r X<{\centering}}
         \ifthenelse{\equal{\BlindReview}{true}}%
         {% For blind review
@@ -58,7 +80,7 @@
     \end{tabularx}
 \end{center}
 
-\vskip 10pt
+\vskip 5pt
 
 \begin{center}
     \zihao{4}
@@ -83,7 +105,7 @@
     % \end{tabularx}
 \end{center}
 
-\vskip 10pt
+\vskip 5pt
 
 \begin{center}
     \zihao{-3}
