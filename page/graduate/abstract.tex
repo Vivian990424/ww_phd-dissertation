@@ -2,55 +2,53 @@
 \chapternonum{摘要}
 % 背景
 水稻种植区作为全球农业土地系统中受人为水分管理深刻影响的高度集约化土地利用类型，其空间分布与生长季动态不仅决定着全球粮食供给格局，也深刻影响农业水资源消耗、温室气体排放及地表能量分配过程。
-已有研究长期关注水稻种植区的甲烷排放及其生物地球化学增温效应，而对其通过地表能量平衡调节地表热环境的生物物理效应仍缺乏充分认知。
+已有研究长期关注水稻种植的甲烷排放及其生物地球化学增温效应，而对其通过地表能量平衡调节地表热环境的生物物理效应仍缺乏充分认知。
 作为典型的水—植被—土壤复合下垫面，水稻种植区在水稻生长季内通过田面水层蒸发和水稻冠层蒸腾增强潜热通量、调节显热交换，从而改变地表能量分配格局，可能导致可观测的地表降温效果。
 % 全球尺度水稻种植地表温度效应研究的关键制约在于，
 % 现有水稻种植区数据难以同时满足全球覆盖、长期连续、中等空间分辨率及日尺度动态监测等需求。
 % 这一数据缺口与稻作系统自身的复杂性密切相关：稻作制度受气候背景、水分管理、播栽制度、品种熟期和复种方式共同影响，表现出播栽期不固定、生长季长度差异大、年内种植季次差异显著和遥感时序信号复杂等特征，使全球尺度水稻种植区的一致提取面临显著挑战。
-但要在全球尺度上定量评估这一效应，数据基础构成了长期研究瓶颈。
-受气候背景、水分管理、播栽制度、品种熟期和复种方式共同影响，稻作制度表现出播栽期不固定、生长季长度差异大、年内种植季次差异显著和遥感时序信号复杂等特征。这种稻作生态系统固有的高度复杂性使全球尺度水稻种植区的一致提取面临挑战，也使得现有数据难以同时满足全球覆盖、长期连续、中等空间分辨率及日尺度动态监测等需求。
+然而，现有水稻种植区数据仍难以支撑水稻种植地表温度效应的全球尺度定量评估。
+受气候背景、水分管理、播栽方式、品种熟期和复种制度共同影响，全球稻作系统表现出播栽期变化大、生长季长度差异显著、年内种植季数量不一以及遥感时序信号复杂等特征。
+这种显著的时空异质性增加了全球水稻种植区遥感提取的难度，使得现有数据难以同时满足全球覆盖、长期连续、中等空间分辨率及逐日时间分辨率等需求。
 
 % MPD_DTW 方法
-针对全球复杂稻作制度下水稻真实生长季难以统一识别的问题，本研究提出融合了物候知识与时序匹配双重优势的 MPD\_DTW 框架。
-该框架由移动物候检测（Moving Phenological Detection, MPD）和动态时间规整（Dynamic Time Warping, DTW）两个相互协作的模块构成。
-MPD 模块基于 Terra/Aqua MODIS 地表反射率重建的逐日归一化植被指数（Normalized Difference Vegetation Index, NDVI）和陆地表面水分指数（Land Surface Water Index, LSWI）时间序列，综合利用水稻移栽期的淹水信号和收获期绿度衰退等物候特征，逐像元、逐日识别潜在的水稻生长季起始日和结束日。
-DTW 模块则进一步利用生长季内植被指数曲线形态特征，计算候选生长季 NDVI 曲线与标准水稻曲线的相似性。对于同一候选 SOS 下的多个候选 EOS，选取 DTW 距离最小的 SOS--EOS 片段作为该候选 SOS 对应的最优候选生长季。
+为应对上述全球稻作制度高度复杂性与生长季显著异质性带来的全球水稻种植区统一提取困难，本研究提出融合物候知识与时序匹配双重优势的移动物候检测与动态时间规整（Moving Phenological Detection and Dynamic Time Warping, MPD\_DTW）框架。
+该框架由移动物候检测（Moving Phenological Detection, MPD）和动态时间规整（Dynamic Time Warping, DTW）两个相互耦合的模块构成。
+MPD 模块基于 Terra/Aqua 中分辨率成像光谱仪（Moderate Resolution Imaging Spectroradiometer, MODIS）地表反射率重建的逐日归一化植被指数（Normalized Difference Vegetation Index, NDVI）和陆地表面水分指数（Land Surface Water Index, LSWI）时间序列，综合利用水稻移栽或返青初期的淹水信号以及成熟收获后的绿度衰退等物候特征，逐像元、逐日识别潜在的水稻生长季起始日（Start of Season, SOS）和结束日（End of Season, EOS）。
+DTW 模块则进一步利用生长季内植被指数曲线形态特征，计算候选生长季 NDVI 曲线与标准水稻生长曲线之间的相似性。%对于同一候选 SOS 下的多个候选 EOS，选取 DTW 距离最小的 SOS--EOS 片段作为该候选 SOS 对应的最优候选生长季。
+根据 DTW 对候选生长季的判别结果更新下一轮 SOS 搜索起点，从而实现同一像元内单季、双季、多季或跨年水稻生长季的连续识别。
 该框架使水稻种植区遥感提取同时受到物候知识和完整生长曲线形态的双重约束，既降低了仅凭物候规则确定生长季起止点所导致的不稳定性，也弥补了单纯曲线形态匹配缺乏物候定位、难以适应多样播栽制度与年内季次的局限。
 
 % GlobalRice500 数据集
 基于该框架，本研究构建了 2001--2022 年全球 500 m 逐日水稻种植区数据集 GlobalRice500。
 结合全球典型参考区高分辨率水稻图、目视解译样本和统计资料等多源参考资料，本研究从像元级空间识别精度和国家尺度面积一致性两个层面对数据集可靠性进行了评价。% 联合国粮食及农业组织（Food and Agriculture Organization of the United Nations, FAO）国家尺度
-结果表明，GlobalRice500 在全球九个典型参考区的总体精度为 88.85\%--99.60\%，与 113 个国家 2001--2022 年 FAO 水稻收获面积保持高度一致，能够支撑全球、洲际和国家尺度的长期水稻时空格局分析。
+结果显示，GlobalRice500 在全球九个典型参考区的总体精度为 88.85\%--99.60\%，与 113 个国家 2001--2022 年联合国粮食及农业组织（Food and Agriculture Organization of the United Nations, FAO）统计数据具有较高一致性。%，表明该数据集可支撑全球、洲际和国家尺度的长期水稻时空格局分析。
 % 水稻时空格局分析
-基于 GlobalRice500，本研究进一步揭示了 21 世纪以来全球水稻种植区分布格局的变化。
-2001--2022 年，全球水稻收获面积由约 1.38 亿公顷增加至约 1.59 亿公顷，净增加超过 2100 万公顷。
-亚洲始终是全球水稻收获面积的主体，占比长期超过 85\%；非洲水稻收获面积由约 770 万公顷增加至约 1540 万公顷，为增长最快的大洲，其正向增长量相当于全球净增加量的 39.4\%。
-国家尺度上，印度和中国长期位居全球前两位，2022 年合计约占全球一半，构成全球水稻种植区分布格局的双核心；与此同时，尼日利亚、柬埔寨等国家的水稻收获面积及其全球占比持续上升，表明全球水稻扩张正在向部分非洲和东南亚新兴稻区延伸。
+基于 GlobalRice500，本研究进一步揭示了 21 世纪以来全球水稻种植区空间分布及其面积变化。
+2001--2022 年，全球水稻种植区面积由约 1.38 亿公顷增加至约 1.59 亿公顷，净增加超过 2100 万公顷。
+亚洲始终是全球水稻种植区的主体，其面积占比长期超过 85\%；非洲水稻种植区面积由约 770 万公顷增加至约 1540 万公顷，为增长最快的大洲，对全球水稻净增量的贡献率为 39.4\%。
+在国家尺度上，印度和中国长期位居全球前两位，2022 年合计占全球面积近一半，是全球水稻生产的两个主要国家；与此同时，尼日利亚、柬埔寨等国家的水稻种植区面积及其全球占比总体上升，反映出部分非洲和东南亚新兴稻区的扩张趋势。
 
 % 温度
-利用 GlobalRice500 提供的逐像元逐日的水稻种植区信息，本研究进一步结合 2003--2020 年全球 1 km 日尺度地表温度（Land Surface Temperature, LST）数据，在每个水稻像元各自的生长季时间窗口内，构建水稻种植区与周边同期非水稻农田的对照分析框架。
-% 在全球长时序逐日水稻种植区提取的基础上，本研究进一步结合 2003--2020 年全球 1 km 日尺度地表温度（Land Surface Temperature，LST）数据，构建水稻生长季内水稻种植区与周边非水稻农田的对照分析框架。
-为量化水稻种植区相对于邻近农田的地表温度效应，本研究将非水稻农田 LST 与水稻种植区 LST 之差定义为 $\Delta \mathrm{LST}$。
-结果表明，全球水稻种植区在水稻生长季内具有广泛而稳定的日间地表降温效应，年均 $\Delta \mathrm{LST}$ 为 0.21--0.27~$^\circ$C，且各年份 95\% 置信区间均高于 0。
-夜间 $\Delta \mathrm{LST}$ 量级远小于日间并接近 0，
-表明水稻种植区降温主要发生在太阳辐射驱动下蒸散发增强和显热通量降低的日间能量分配过程中。
-水稻种植区降温效应具有明确的物候阶段性，日间 $\Delta \mathrm{LST}$ 随水稻生长季推进呈先增强后减弱的“倒 V 型”变化，并在生长季日序（Day of Season, DOS）60--100 附近达到峰值，对应水稻冠层快速发育和蒸散发活跃阶段。
-进一步分析表明，水稻种植区的地表降温效应受到景观组成、田块空间连续性和边界邻近关系的共同调控。
-在 10 km 网格尺度上，局地水稻种植区比例每增加 1\%，日间 $\Delta \mathrm{LST}$ 平均增加约 0.0014~$^\circ$C。
-随着水稻连片规模由约 0.5~km 增至约 5.5~km，日间平均降温由约 0.13~$^\circ$C 增至约 0.43~$^\circ$C，生长季内峰值降温由约 0.18~$^\circ$C 增至约 0.69~$^\circ$C。
-基于非水稻梯度环带的分析显示，水稻种植区的低温信号可向邻近非水稻农田扩展，并随其距水稻种植区边界距离增加逐渐减弱。
-上述结果表明，水稻种植区降温是在田面水分、冠层发育和景观结构共同作用下形成的地表生物物理效应，具有显著的时间阶段性、尺度依赖性和空间外溢特征。
+利用 GlobalRice500 提供的逐像元逐日水稻种植区信息，本研究结合 2003--2020 年全球日尺度地表温度（Land Surface Temperature, LST）数据，在每个水稻像元对应的生长季时间窗口内，构建水稻种植区与周边同期非水稻耕地的匹配对照分析框架。
+为量化水稻种植区相对于邻近非水稻耕地的地表温度差异，本研究将非水稻耕地 LST 与水稻种植区 LST 之差定义为 $\Delta \mathrm{LST}$，并以此表征水稻种植区的地表温度效应。
+结果表明，全球水稻种植区在水稻生长季内表现出广泛而稳定的日间地表降温效应，年均 $\Delta \mathrm{LST}$ 为 0.21--0.27~$^\circ$C，且各年份 95\% 置信区间的下限均高于 0。
+夜间 $\Delta \mathrm{LST}$ 量级远小于日间且接近 0，
+说明水稻种植区的可观测降温主要表现于日间，这一昼夜差异与太阳辐射驱动下蒸散发增强和显热通量降低的能量分配机制相一致。
+分气候区分析表明，日间降温信号在 Köppen--Geiger 主要气候区均稳定存在，其中干旱气候区的降温最强，暖温带和赤道气候区相对较弱。
+水稻种植区降温效应具有明确的物候阶段性，日间 $\Delta \mathrm{LST}$ 随水稻生长季推进呈先增强后减弱的“倒 V 型”变化，并在生长季日序（Day of Season, DOS）60--100 附近达到峰值，大致对应于水稻冠层快速发育和蒸散发活跃阶段。
+进一步分析表明，水稻种植区地表降温效应受到水稻种植区与非水稻种植区空间分布结构的影响。
+在十公里网格内，水稻种植区比例每增加 1\%，日间 $\Delta \mathrm{LST}$ 平均增加约 0.0014~$^\circ$C。
+随着水稻种植区规模由约 0.5~km 增至约 5.5~km，日间平均降温由约 0.13~$^\circ$C 增至约 0.43~$^\circ$C，生长季内峰值降温由约 0.18~$^\circ$C 增至约 0.69~$^\circ$C。
+基于非水稻耕地梯度环带的分析显示，水稻种植区的低温信号可向邻近非水稻耕地扩展，并随距水稻种植区边界的距离增加而逐渐减弱。
+上述结果表明，水稻种植区降温是在田面水分、冠层发育、背景气候和景观结构共同作用下形成的地表生物物理效应。
 
 %总结意义
-本研究形成了从逐日水稻种植区遥感识别算法开发、全球长时序逐日水稻种植区数据集构建到全球水稻种植区地表气候效应评估的完整研究链条。
+本研究形成了从逐日水稻种植区遥感识别算法开发、全球长时序逐日水稻种植区数据集构建，到全球水稻种植区地表温度效应评估的完整研究链条。
 MPD\_DTW 为跨区域、跨制度逐日水稻种植区识别提供了具有物候解释性的技术框架；
-GlobalRice500 将该识别能力转化为长期、连续、可复用的全球水稻动态数据基础，为真实生长季约束下的水稻种植区地表温度效应评估提供了关键支撑；
+GlobalRice500 将该识别能力转化为长期、连续、可复用的全球水稻动态数据基础，为实际生长季约束下的水稻种植区地表温度效应评估提供了关键支撑；
 全球水稻种植区地表降温效应评估揭示了水稻农业生态系统除温室气体排放之外对地表热环境的生物物理调节作用。
-本研究将水稻种植区的研究视角从静态的空间分布制图，拓展到对其生长季动态过程与环境效应的动态刻画，使水稻种植区成为可量化的多维土地系统单元，
-% 本研究深化了对水稻种植区的科学认识，
-% 本研究将水稻种植区从静态作物分布对象拓展为具有可识别生长季过程和可量化地表气候效应的动态土地系统单元，
-从而有助于在粮食生产、水资源利用、温室气体排放和局地热环境调节之间建立更加完整的水稻生态系统气候效应认识，并为农业土地系统的可持续管理和气候适应研究提供数据基础与科学依据。
-
+本研究将水稻种植区的遥感表征由静态的空间分布制图，拓展到对其生长季过程与环境效应的动态刻画，使水稻种植区成为可量化的多维土地系统单元，有助于在粮食生产、水资源利用、温室气体排放和局地热环境调节之间建立更加完整的水稻生态系统气候效应认识，并为农业土地系统的可持续管理和气候适应研究提供数据基础与科学依据。
 
 \noindent \textbf{关键词}：水稻；遥感；GlobalRice500；MPD\_DTW；MODIS；地表温度；地表降温效应
 
@@ -58,39 +56,44 @@ GlobalRice500 将该识别能力转化为长期、连续、可复用的全球水
 \cleardoublepage
 \chapternonum{Abstract}
 
-Rice growing areas constitute a highly intensified type of land use within the global agricultural land system and are profoundly influenced by anthropogenic water management. Their spatial distribution and growing-season dynamics not only determine the global pattern of food supply, but also profoundly affect agricultural water consumption, greenhouse gas emissions, and land-surface energy partitioning.
-Existing studies have long focused on methane emissions and their biogeochemical warming effects, whereas the biophysical effects through which these areas regulate the land-surface thermal environment via the surface energy balance remain insufficiently understood.
-As a typical water--soil--vegetation composite underlying surface, rice paddies enhance latent heat flux through evaporation from the surface water layer and transpiration from the rice canopy during the growing season, and regulate sensible heat exchange, thereby altering land-surface energy partitioning and potentially producing an observable land-surface cooling effect.
-However, quantifying this effect at the global scale has long been constrained by the lack of an adequate data foundation. Jointly influenced by climatic background, water management, sowing and transplanting systems, cultivar maturity, and multiple-cropping practices, rice cropping systems exhibit variable planting dates, widely differing growing-season lengths, pronounced variation in the number of intra-annual cropping seasons, and complex remote-sensing time-series signals. This inherent complexity of rice cropping ecosystems poses substantial challenges to the spatially consistent extraction of rice cultivation areas at the global scale, leaving existing datasets unable to simultaneously satisfy the requirements of global coverage, long-term continuity, moderate spatial resolution, and daily dynamic monitoring.
+Rice growing areas represent an intensively managed land-use type within global agricultural land systems and are strongly shaped by human water management. Their spatial distribution and growing-season dynamics shape global food supply and influence agricultural water consumption, greenhouse gas emissions, and land surface energy partitioning.
+Previous research has focused primarily on methane emissions and their biogeochemical warming effects, whereas the biophysical regulation of the land surface thermal environment through surface energy partitioning remains poorly understood.
+Paddy fields form a coupled water–vegetation–soil surface system. During the rice growing season, evaporation from standing water and transpiration from the rice canopy enhance latent heat flux and alter sensible heat exchange, potentially producing observable land surface cooling.
+However, existing datasets remain inadequate for quantifying these land surface temperature effects globally. Global rice cropping systems vary widely in planting dates, growing season duration, annual cropping frequency, and remote sensing time series patterns because of differences in climate, water management, crop-establishment practices, cultivar maturity, and multiple-cropping systems. This spatiotemporal heterogeneity complicates globally consistent paddy rice mapping, while existing datasets rarely combine global coverage, long-term continuity, moderate spatial resolution, and daily temporal information.
 
 % Rice mapping
-To address the difficulty of uniformly identifying actual rice growing seasons under globally complex rice cropping systems, this study proposes an MPD\_DTW framework that integrates Moving Phenological Detection and Dynamic Time Warping.
-The framework consists of two collaborative modules: Moving Phenological Detection (MPD) and Dynamic Time Warping (DTW). 
-Based on daily normalized difference vegetation index (NDVI) and land surface water index (LSWI) time series reconstructed from Terra/Aqua MODIS surface reflectance data, the MPD module integrates phenological features such as the flooding signal during the rice transplanting stage and the greenness decline during the harvest stage to identify potential start-of-season (SOS) and end-of-season (EOS) dates for rice on a pixel-by-pixel and day-by-day basis.
-The DTW module then calculates the similarity between the NDVI trajectory of each candidate growing season and a standard rice growth curve. For multiple candidate EOS dates associated with the same candidate SOS, the SOS--EOS segment with the smallest DTW distance is selected as the optimal candidate growing season corresponding to that SOS.
-This framework constrains the extraction of paddy rice areas using both phenological knowledge and the complete shape of the seasonal growth trajectory. It reduces the instability that may arise when growing-season start and end dates are determined solely by phenological rules, and compensates for the limitations of curve-shape matching alone, which lacks phenological anchoring and adapts poorly to diverse sowing--transplanting systems and varying intra-annual cropping seasons.
+To address these challenges, this study proposes the Moving Phenological Detection and Dynamic Time Warping (MPD\_DTW) framework, which integrates phenological knowledge with time-series matching to consistently identify rice growing seasons across diverse cropping systems.
+The framework comprises two coupled modules: Moving Phenological Detection (MPD) and Dynamic Time Warping (DTW). 
+Daily time series of the normalized difference vegetation index (NDVI) and land surface water index (LSWI) were reconstructed from Terra/Aqua Moderate Resolution Imaging Spectroradiometer (MODIS) surface reflectance data. The MPD module uses flooding signals during transplanting or early green-up and greenness decline following maturation and harvest to identify candidate start-of-season (SOS) and end-of-season (EOS) dates along the daily time axis for each pixel.
+The DTW module then evaluates the similarity between the NDVI trajectory of each candidate growing season and a standard rice growth curve. %For multiple candidate EOS dates associated with the same candidate SOS, the SOS--EOS segment with the smallest DTW distance is selected as the optimal candidate growing season corresponding to that SOS.
+Based on the DTW classification of each candidate season, the framework updates the starting point for the next SOS search, enabling continuous identification of single, double, multiple, and cross-year rice growing seasons within the same pixel.
+By combining phenological constraints with the complete seasonal growth trajectory, MPD\_DTW improves the robustness of paddy-rice mapping. It reduces uncertainty in SOS and EOS detection based solely on phenological rules, while providing the phenological anchoring needed for curve matching across diverse planting schedules and annual cropping frequency.
 
-Based on this framework, this study constructed GlobalRice500, a global 500~m daily rice growing area dataset for 2001--2022.
-Using multiple reference data sources, including high-resolution rice maps from typical reference regions worldwide, visually interpreted samples, and country-scale statistics from the Food and Agriculture Organization of the United Nations (FAO), the reliability of the dataset was evaluated from two perspectives: pixel-level spatial identification accuracy and country-scale area consistency. The results showed that GlobalRice500 achieved overall accuracies of 88.85\%--99.60\% in nine typical reference regions worldwide, and maintained high consistency with FAO rice harvested areas for 113 countries during 2001--2022. These results indicate that GlobalRice500 can support long-term analyses of rice spatiotemporal dynamics at global, continental, and national scales.
-Based on GlobalRice500, this study further revealed changes in the global distribution of paddy rice areas since the beginning of the 21st century.
-From 2001 to 2022, the global rice harvested area increased from approximately 138 million hectares to approximately 159 million hectares, with a net increase of more than 21 million hectares.
-Asia has consistently been the dominant region of global rice harvested area, accounting for more than 85\% of the global total over the long term. The rice harvested area in Africa increased from approximately 7.7 million hectares to approximately 15.4 million hectares, making it the fastest-growing continent; its positive increase was equivalent to 39.4\% of the global net increase.
-At the national scale, India and China have long ranked as the top two countries worldwide, together accounting for nearly half of the global total in 2022 and forming the dual core of the global distribution of rice growing areas. Meanwhile, the rice harvested area and global share of countries such as Nigeria and Cambodia continue to rise, indicating that global rice expansion is extending toward emerging rice-growing regions in parts of Africa and Southeast Asia.
+Using MPD\_DTW, this study constructed GlobalRice500, a global 500 m daily rice growing area dataset for 2001--2022.
+GlobalRice500 was evaluated using high-resolution paddy-rice maps from representative regions, visually interpreted samples, and country-level statistics from the Food and Agriculture Organization of the United Nations (FAO). The evaluation examined pixel-level mapping accuracy and country-level agreement in estimated area. GlobalRice500 achieved overall accuracies of 85\%--99.60\% across nine representative regions, while its country-level area estimates agreed closely with FAO statistics for 113 countries during 2001–2022. %These results indicate that GlobalRice500 can support long-term analyses of rice spatiotemporal dynamics at global, continental, and national scales.
+GlobalRice500 was subsequently used to characterize the spatial distribution and area changes of global paddy rice since the beginning of the twenty-first century. 
+Global paddy rice area increased from approximately 138 million hectares in 2001 to 159 million hectares in 2022, representing a net gain of more than 21 million hectares.
+Asia consistently accounted for more than 85\% of global paddy rice area during 2001–2022. Paddy rice area in Africa increased from approximately 7.7 million to 15.4 million hectares, representing the fastest continental expansion and accounting for 39.4\% of the global net increase.
+At the national scale, India and China remained the two countries with the largest paddy rice areas and together accounted for nearly half of the global total in 2022. During the study period, both paddy rice area and global share increased overall in countries such as Nigeria and Cambodia, reflecting the expansion of emerging rice-growing regions in parts of Africa and Southeast Asia.
 
 % Temperature
-Using the pixel-level daily rice growing area information provided by GlobalRice500, this study further incorporated a global 1~km daily land surface temperature (LST) dataset for 2003--2020 and constructed, within the growing-season window of each individual rice pixel, a comparative analysis framework between rice paddies and their surrounding contemporaneous non-rice cropland. The difference between non-rice cropland LST and rice paddy LST is defined as $\Delta \mathrm{LST}$, which quantifies the land-surface temperature effect of rice paddies relative to adjacent croplands.
-The results showed that global rice growing areas exhibited a widespread and stable daytime land-surface cooling effect during the rice growing season. The annual mean $\Delta \mathrm{LST}$ ranged from 0.21 to 0.27~$^\circ$C, and the 95\% confidence intervals were above 0 in all years.
-Nighttime $\Delta \mathrm{LST}$ was much smaller in magnitude than daytime $\Delta \mathrm{LST}$ and was close to 0, indicating that the cooling of paddy rice areas mainly arises during daytime energy partitioning, characterized by enhanced evapotranspiration and reduced sensible heat flux under solar-radiation forcing.
-The cooling effect of rice paddies showed a clear dependence on phenological stage. Daytime $\Delta \mathrm{LST}$ first increased and then decreased as the rice growing season progressed, forming an inverted V-shaped pattern, and reached its peak around day of season (DOS) 60--100. The peak period corresponded to the stage of rapid rice canopy development and active evapotranspiration.
-Further analysis showed that the land-surface cooling effect of rice cultivation areas was jointly regulated by landscape composition, the spatial continuity of rice patches, and boundary adjacency.
-At the 10~km grid scale, each 1\% increase in the local proportion of paddy rice areas raised daytime $\Delta \mathrm{LST}$ by approximately 0.0014~$^\circ$C on average.
-As the paddy field size increased from approximately 0.5~km to approximately 5.5~km, the daytime mean cooling increased from approximately 0.13~$^\circ$C to approximately 0.43~$^\circ$C, and the peak cooling within the growing season increased from approximately 0.18~$^\circ$C to approximately 0.69~$^\circ$C.
-The analysis based on Non-Paddy Ladders (NPLs) showed that the low-temperature signal of rice paddies could extend into adjacent non-rice cropland and gradually weakened with increasing distance from the rice-paddy boundaries.
-These results indicate that cooling of rice growing areas is a land-surface biophysical effect formed under the combined influence of field-surface water, canopy development, and landscape structure, with significant temporal stage dependence, scale dependence, and spatial spillover characteristics.
+Pixel-level daily paddy area information from GlobalRice500 was combined with global daily land surface temperature (LST) data for 2003–2020. A matched-comparison framework contrasted each paddy pixel with nearby non-paddy cropland during the same pixel-specific growing-season window. The LST difference between nearby non-paddy cropland and paddy fields was defined as $\Delta \mathrm{LST}$ to quantify the land surface temperature effect of paddy cultivation. 
+Paddy fields worldwide exhibited widespread and consistent daytime land surface cooling during the rice growing season. Annual mean daytime $\Delta \mathrm{LST}$ ranged from 0.21 to 0.27~$^\circ$C, and the lower bound of the 95\% confidence interval exceeded zero in every year. 
+Nighttime $\Delta \mathrm{LST}$ was much smaller than daytime $\Delta \mathrm{LST}$ and remained near zero, indicating that observable paddy cooling occurred primarily during the day. This diurnal contrast is consistent with enhanced evapotranspiration and reduced sensible heat flux under solar-radiation forcing.
+Daytime cooling occurred consistently across the major Köppen–Geiger climate zones and was strongest in arid climates but weaker in warm-temperate and equatorial climates.
+The cooling effect varied systematically across phenological stages. Daytime $\Delta \mathrm{LST}$ followed an inverted-V trajectory as the rice growing season progressed and peaked between day of season (DOS) 60 and 100. This peak broadly coincided with rapid canopy development and active evapotranspiration.
+Further analyses showed that the cooling effect varied with the spatial configuration of paddy fields and non-paddy cropland.
+Within 10 km $\times$ 10 km grid cells, a one-percentage-point increase in Paddy Proportion was associated with an average increase of approximately 0.0014~$^\circ$C in daytime $\Delta \mathrm{LST}$.
+As the Paddy Size increased from approximately 0.5~km to approximately 5.5~km, the daytime mean cooling increased from approximately 0.13~$^\circ$C to approximately 0.43~$^\circ$C, and the peak cooling within the growing season increased from approximately 0.18~$^\circ$C to approximately 0.69~$^\circ$C.
+Analysis using the Non-Paddy Ladder (NPL), a sequence of non-paddy cropland rings outside paddy boundaries, showed that the cooling signal extended into adjacent non-paddy cropland and weakened with increasing distance from the boundary.
+Together, these results indicate that paddy cooling is a land surface biophysical effect shaped by surface water, canopy development, background climate, and landscape structure.
 
-This study establishes a complete research chain from the development of a daily rice growing-season identification algorithm, to the construction of a global long-term daily rice growing area dataset, and further to the assessment of the land-surface climatic effects of rice growing areas.
-The MPD\_DTW framework provides a phenologically interpretable technical framework for daily rice growing area mapping across regions and cropping systems.
-GlobalRice500 transforms this identification capability into a long-term, continuous, and reusable global data basis for rice dynamics, and provides key support for assessing the land-surface temperature effects of rice growing areas under the constraint of the actual rice growing season.
-The assessment of the land-surface cooling effect of rice growing areas reveals the biophysical regulation of rice ecosystems on the land-surface thermal environment beyond greenhouse gas emissions. This study extends the research perspective on rice growing areas from static mapping of spatial distribution to dynamic characterization of their growing-season processes and environmental effects, turning them into quantifiable, multi-dimensional land-system units. It helps establish a more complete understanding of the climatic effects of rice ecosystems across food production, water-resource use, greenhouse gas emissions, and local thermal-environment regulation, and provides a data basis and scientific evidence for sustainable management and climate adaptation research in agricultural land systems.
+% 总体研究意义
+This study establishes a coherent research chain linking daily rice area mapping, construction of a long-term global dynamic paddy-rice dataset, and assessment of the land surface temperature effects of paddy cultivation.
+MPD\_DTW framework provides a phenologically interpretable approach for daily rice growing area mapping across regions and cropping systems.
+GlobalRice500 converts this identification capability into a long-term, continuous, and reusable global data basis and enables paddy land surface temperature effects to be assessed within actual pixel-level growing-season windows.
+The cooling assessment reveals a biophysical role of paddy agroecosystems in regulating the land surface thermal environment, complementing existing understanding of their greenhouse-gas effects.
+This study extends remote sensing of paddy rice from static distribution mapping to dynamic characterization of rice growing season processes and environmental effects, enabling paddy areas to be treated as quantifiable, multidimensional land-system units.
+Above all, these advances support a more integrated understanding of paddy agroecosystems across food production, water use, greenhouse-gas emissions, and local thermal regulation, while providing data and scientific evidence for sustainable agricultural land management and climate adaptation.
 
 \noindent \textbf{Keywords}: paddy rice; remote sensing; GlobalRice500; MPD\_DTW; MODIS; land surface temperature; land surface cooling effect

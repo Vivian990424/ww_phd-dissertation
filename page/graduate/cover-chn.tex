@@ -6,7 +6,10 @@
         分类号：           & \underline{TP751}  &
         单位代码：         & \uline{\hfill 10335 \hfill} \\
         密{\quad}级：      & \underline{无} &
-        学{\quad\quad}号： & \underline{12114090}
+        学{\quad\quad}号： &
+        \ifthenelse{\equal{\BlindReview}{true}}%
+        {\underline{\hspace{3.8cm}}}%
+        {\underline{\StudentID}}
     \end{tabularx}
 \end{center}
 
@@ -119,7 +122,7 @@
         {%
             申请人姓名： & \uline{\hfill} \\
             指导教师：   & \uline{\hfill} \\
-            合作导师：   &  \uline{\hfill} \\
+            % 合作导师：   &  \uline{\hfill} \\
         }
         {%
             申请人姓名： & \uline{\hfill \StudentName \hfill} \\

@@ -84,3 +84,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - 优先引用高水平期刊，如 *Nature*、*Science*、*Nature Climate Change*、*Nature Reviews Earth & Environment*、*Nature Geoscience*、*Nature Food*、*Nature Ecology & Evolution*、*Nature Sustainability*、*Nature Water*、*Nature Plants*、*Nature Cities*、*Nature Communications*、*Remote Sensing of Environment*、*ISPRS Journal of Photogrammetry and Remote Sensing*、*Earth System Science Data*、*Scientific Data*、*Global Change Biology* 等；非顶刊文献若与观点高度一致亦可引用。
   - 引用位置尽量精准，避免在句子或段落末尾堆砌多篇文献。
   - **不要引用**论文《Widespread land surface cooling from paddy rice cultivation revealed by global satellite mapping》，这是用户本人的文章，不应在本博士论文中引用。
+
+## 回答格式规范
+
+- 引用论文中的具体位置时，使用可点击的 markdown 超链接格式，方便用户直接跳转：
+  - 引用文件：`[filename.tex](body/graduate/chapters/filename.tex)`
+  - 引用具体行号：`[filename.tex:42](body/graduate/chapters/filename.tex#L42)`
+  - 引用行号范围：`[filename.tex:42-51](body/graduate/chapters/filename.tex#L42-L51)`
+  - 引用文件夹：`[src/utils/](src/utils/)`
+  - 除非用户明确要求，否则不要使用 backtick `` ` `` 或 HTML `<code>` 标签来包裹文件引用，始终使用 markdown `[text](link)` 格式。
